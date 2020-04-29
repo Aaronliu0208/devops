@@ -1,0 +1,42 @@
+version: "3"
+services:
+  consul:
+      image: consul
+      ports:
+        - 8400:8400
+        - 8500:8500
+        - 8600:53/udp
+      command: agent -server -client=0.0.0.0 -dev -node=node0 -bootstrap-expect=1 -data-dir=/tmp/consul
+      labels:
+        SERVICE_IGNORE: 'true'
+  prometheus:
+    image: prom/prometheus
+    user: root
+    ports:
+      - 9090:9090
+    links:
+      - blackbox_exporter
+      - alertmanager
+      - consul
+    volumes:
+      - "./config:/config"
+      - "./data/prometheus:/data"
+    command: --config.file=/config/prometheus.yml --storage.tsdb.path=/data --storage.tsdb.retention.time=5000h
+  blackbox_exporter:
+    image: prom/blackbox-exporter
+    ports:
+      - "9115:9115"
+    dns: 114.114.114.114
+    restart: always
+    volumes:
+      - "./config:/config"
+    command: --config.file=/config/blackbox.yml
+  alertmanager:
+    image: prom/alertmanager
+    restart: always
+    ports:
+      - "9093:9093"
+    volumes:
+      - "./data/alertmanager:/data"
+      - "./config:/config"
+    command: --config.file=/config/alertmanager.yml --storage.path=/data
