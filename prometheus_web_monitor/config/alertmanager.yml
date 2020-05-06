@@ -1,2 +1,18 @@
 global:
   resolve_timeout: 5m
+templates:
+  - '/templates/*.tmpl'
+
+route:
+  group_by: ['alertname']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 1h
+  receiver: 'wechatbot'
+receivers:
+- name: 'wechatbot'
+  wechatbot_configs:
+  - send_resolved: true
+    url: 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=c16bad0a-a8fa-4ecf-b76e-7b67c7c8fb1c'
+    message: '{{ template "node.wechat.message" . }}'
+    mentions: ['@all']

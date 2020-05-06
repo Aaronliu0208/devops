@@ -5,7 +5,10 @@ alerting:
   alertmanagers:
     - static_configs:
       - targets:
-        - 'alertmanager:9093'
+        # - 'alertmanager:9093'
+        - '172.20.4.86:9095'
+rule_files:
+  - "/rules/alert.rules.yml"
 scrape_configs:
   - job_name: 'prometheus'
     static_configs:
@@ -21,7 +24,7 @@ scrape_configs:
         datacenter: 'dc1'
         refresh_interval: '2s'    
     relabel_configs:
-      - source_labels: [__address__]
+      - source_labels: [__meta_consul_service_metadata_address]
         target_label: __param_target
       - source_labels: [__param_target]
         target_label: instance

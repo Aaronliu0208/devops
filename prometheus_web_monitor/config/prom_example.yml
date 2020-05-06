@@ -1,0 +1,108 @@
+# my global config
+global:
+  scrape_interval:     15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+  # scrape_timeout is set to the global default (10s).
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      - 'localhost:9093'
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+  - "alert_rules.yml"
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: 'prometheus'
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+
+    static_configs:
+    - targets: ['localhost:9090']
+
+  - job_name: 'consul-blackbok'
+    tls_config:
+      insecure_skip_verify: true
+    
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    
+    relabel_configs:
+          # consul 相关信息
+          - source_labels: 
+              - '__meta_consul_dc'
+            target_label: 'consul_dc'
+          - source_labels: 
+              - '__meta_consul_node'
+            target_label: 'consul_node'
+          - source_labels: 
+              - '__meta_consul_service_id'
+            target_label: 'consul_service_id'
+          
+          #adc 监控目标相关信息
+          - source_labels:
+              - '__meta_consul_service_metadata_platform'
+            target_label: 'platform'
+          - source_labels:
+              - '__meta_consul_service_metadata_metric_schema'
+            target_label: 'adc_metric_schema'
+          - source_labels: 
+              - '__meta_consul_service_metadata_metric_address'
+            target_label: 'adc_metric_address'
+          - source_labels: 
+              - '__meta_consul_service_metadata_metric_port'
+            target_label: 'adc_metric_port'
+          - source_labels:
+              - '__meta_consul_service_metadata_metric_path'
+            target_label: 'adc_metric_path'
+          - source_labels:
+              - '__meta_consul_service_metadata_metric_param'
+            target_label: 'adc_metric_param'
+
+          - source_labels:
+              - '__meta_consul_service_metadata_adc_resource_id'
+            target_label: 'adc_resource_id'
+          - source_labels:
+              - '__meta_consul_service_metadata_adc_resource_type'
+            target_label: 'adc_resource_type'
+          - source_labels: 
+              - '__meta_consul_service_metadata_adc_alertrule_id'
+            target_label: 'adc_alertrule_id'
+        
+          # blackbok 参数配置
+          - source_labels: 
+              - 'adc_metric_address'
+              - 'adc_metric_port'
+            target_label: 'instance'
+            separator: ':'
+          - source_labels:
+              - 'adc_metric_schema'
+              - 'instance'
+            target_label: '__tmp_param_target'
+            separator: '://'
+          - source_labels:
+              - '__tmp_param_target'
+              - 'adc_metric_path'
+            target_label: __tmp_param_target_without_param
+            separator: ''
+          - source_labels:
+              - '__tmp_param_target_without_param'
+              - 'adc_metric_param'
+            target_label: __param_target
+            separator: '?'
+          - target_label: __address__
+            replacement: 127.0.0.1:9115            
+    
+    consul_sd_configs:
+      - server: '106.74.152.45:19583'
+        datacenter: 'dc1'
+        scheme: 'http'
+        refresh_interval: '10s'

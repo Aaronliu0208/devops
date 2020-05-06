@@ -21,6 +21,7 @@ services:
     volumes:
       - "./config:/config"
       - "./data/prometheus:/data"
+      - "./rules:/rules"
     command: --config.file=/config/prometheus.yml --storage.tsdb.path=/data --storage.tsdb.retention.time=5000h
   blackbox_exporter:
     image: prom/blackbox-exporter
@@ -32,11 +33,13 @@ services:
       - "./config:/config"
     command: --config.file=/config/blackbox.yml
   alertmanager:
-    image: prom/alertmanager
+    image: hub.htres.cn/pub/alertmanager
+    user: root
     restart: always
     ports:
       - "9093:9093"
     volumes:
       - "./data/alertmanager:/data"
       - "./config:/config"
+      - "./templates:/templates"
     command: --config.file=/config/alertmanager.yml --storage.path=/data
