@@ -26,7 +26,9 @@ scrape_configs:
     relabel_configs:
       - source_labels: [__meta_consul_service_metadata_address]
         target_label: __param_target
-      - source_labels: [__param_target]
+      - source_labels: [__meta_consul_service_metadata_address]
+        target_label: site
+      - source_labels: [__meta_consul_service_metadata_service_name]
         target_label: instance
       - target_label: __address__
         replacement: blackbox_exporter:9115  # The blackbox exporter's real hostname:port.
@@ -45,7 +47,9 @@ scrape_configs:
     relabel_configs:
       - source_labels: [__meta_consul_service_metadata_address]
         target_label: __param_target
-      - source_labels: [__param_target]
+      - source_labels: [__meta_consul_service_metadata_address]
+        target_label: site
+      - source_labels: [__meta_consul_service_metadata_service_name]
         target_label: instance
       - target_label: __address__
         replacement: blackbox_exporter2:9115  # The blackbox exporter's real hostname:port.

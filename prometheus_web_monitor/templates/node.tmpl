@@ -1,13 +1,27 @@
-{{ define "node.wechat.message" }}
-{{ range .Alerts }}
-========start==========
-告警程序：用户中心监控
+{{ define "site.default.message" }}
+{{- if gt (len .Alerts.Firing) 0 -}}
+[故障告警]
+{{ range .Alerts -}}
+===============
 告警级别：{{ .Labels.severity }}
 告警类型：{{ .Labels.alertname }}
-故障主机: {{ .Labels.instance }}
-告警主题: {{ .Annotations.summary }}
-告警详情: {{ .Annotations.description }}
+故障站点: {{ .Labels.site }}
+故障描述: {{ .Annotations.summary }}
+故障监测点: {{ .Labels.job }}
 触发时间: {{ .StartsAt.Format "2006-01-02 15:04:05" }}
-========end==========
 {{ end }}
+{{- end }}
+{{ if gt (len .Alerts.Resolved) 0 -}}
+[故障恢复]
+{{ range .Alerts -}}
+================
+告警级别：{{ .Labels.severity }}
+告警类型：{{ .Labels.alertname }}
+故障站点: {{ .Labels.site }}
+故障描述: {{ .Annotations.summary }}
+故障监测点: {{ .Labels.job }}
+触发时间: {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+恢复时间: {{ .EndsAt.Format "2006-01-02 15:04:05" }}
 {{ end }}
+{{- end }}
+{{- end }}

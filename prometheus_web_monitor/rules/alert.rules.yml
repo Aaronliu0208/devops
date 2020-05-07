@@ -1,10 +1,10 @@
 groups:
 - name: alert.rules
   rules:
-  - alert: EndpointDown
+  - alert: SiteUnreachable
     expr: probe_success == 0
     for: 10s
     labels:
       severity: "critical"
     annotations:
-      summary: "Endpoint {{ $labels.instance }} down"
+      summary: "Site {{ $labels.instance }} unreachable"
