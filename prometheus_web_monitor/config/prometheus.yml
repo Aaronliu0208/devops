@@ -5,8 +5,8 @@ alerting:
   alertmanagers:
     - static_configs:
       - targets:
-        # - 'alertmanager:9093'
-        - '172.20.4.86:9095'
+        - 'alertmanager:9093'
+        #- '172.20.4.86:9095'
 rule_files:
   - "/rules/alert.rules.yml"
 scrape_configs:
@@ -14,7 +14,7 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9090']
   
-  - job_name: 'blackbox'
+  - job_name: 'blackbox-1'
     metrics_path: /probe
     params:
       module: [http_2xx]  # Look for a HTTP 200 response.
@@ -30,3 +30,25 @@ scrape_configs:
         target_label: instance
       - target_label: __address__
         replacement: blackbox_exporter:9115  # The blackbox exporter's real hostname:port.
+      - source_labels: [__meta_consul_service]
+        regex: "consul"
+        action: drop
+  - job_name: 'blackbox-2'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]  # Look for a HTTP 200 response.
+    consul_sd_configs:
+      - server: 'consul:8500'
+        scheme: 'http'
+        datacenter: 'dc1'
+        refresh_interval: '2s'    
+    relabel_configs:
+      - source_labels: [__meta_consul_service_metadata_address]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox_exporter2:9115  # The blackbox exporter's real hostname:port.
+      - source_labels: [__meta_consul_service]
+        regex: "consul"
+        action: drop

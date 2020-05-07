@@ -32,6 +32,15 @@ services:
     volumes:
       - "./config:/config"
     command: --config.file=/config/blackbox.yml
+  blackbox_exporter2:
+    image: prom/blackbox-exporter
+    ports:
+      - "9116:9115"
+    dns: 114.114.114.114
+    restart: always
+    volumes:
+      - "./config:/config"
+    command: --config.file=/config/blackbox.yml
   alertmanager:
     image: hub.htres.cn/pub/alertmanager
     user: root
@@ -42,4 +51,4 @@ services:
       - "./data/alertmanager:/data"
       - "./config:/config"
       - "./templates:/templates"
-    command: --config.file=/config/alertmanager.yml --storage.path=/data
+    command: --config.file=/config/alertmanager.yml --storage.path=/data --log.level=debug
