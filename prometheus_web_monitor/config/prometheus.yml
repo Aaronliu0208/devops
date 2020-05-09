@@ -35,6 +35,8 @@ scrape_configs:
       - source_labels: [__meta_consul_service]
         regex: "consul"
         action: drop
+      - target_label: service
+        replacement: blackbox
   - job_name: 'blackbox-2'
     metrics_path: /probe
     params:
@@ -56,3 +58,5 @@ scrape_configs:
       - source_labels: [__meta_consul_service]
         regex: "consul"
         action: drop
+      - target_label: service
+        replacement: blackbox
