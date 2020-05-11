@@ -1,6 +1,18 @@
 使用prometheus+blackbox监控云路的微服务
 ===
 
+## 技术要点
+
+使用frps进行穿透保障多个监测点与prometheus正常通讯。
+
+使用blackbox进行测点检测给prometheus提供metrics
+
+使用consul进行站点的动态发现。通过[cli](cli)调用consul api将站点添加到服务中。
+
+提供报警模板和prometheus配置模板
+
+自定义[alertmanager](http://yunludev3.htyunlu.com/ams/adc/alertmanager) 添加云信和企业微信机器人报警通知方法
+
 ## 测点的prometheus配置文件定义
 
 ```yaml
@@ -98,3 +110,5 @@ curl -X PUT -d '{
     "address": "https://uc.ms.casicloud.com/1/subsystem/get?system_id=100&client_id=4g0ucoqrwtn92dxq&sign=ir834960bnjghze8343afajga"
   }
 }' http://localhost:8500/v1/agent/service/register
+```
+同时在[cli](cli)中增加了命令行工具管理站点

@@ -36,3 +36,7 @@ __pycache__/
 *$py.class
 
 .env
+
+### bash nohup output ###
+nohup.out
+frpc*.ini
