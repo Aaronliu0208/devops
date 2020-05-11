@@ -20,8 +20,8 @@ def addService(client, name, address):
     if ok:
         print("create service %s ok"%name)
         # try to print service
-        services = [(0, name, address)]
-        print(tabulate(services, headers=TABLE_HEADER,  tablefmt='simple'))
+        services = [(name, address)]
+        print(tabulate(services, headers=['Name','Address'],  tablefmt='simple'))
     else:
         print("create service %s fail"%name)
 
@@ -51,7 +51,7 @@ def listSites(args, client):
     """ list all serivce """
     res = client.agent.services()
     services = []
-    no = 0
+    no = 1
     for k,v in res.items():
        services.append((no, k, v['Meta']['address']))
        no = no + 1
