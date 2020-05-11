@@ -11,7 +11,7 @@
 
 提供报警模板和prometheus配置模板
 
-自定义[alertmanager](http://yunludev3.htyunlu.com/ams/adc/alertmanager) 添加云信和企业微信机器人报警通知方法
+自定义[alertmanager](http://yunludev3.htyunlu.com/ams/adc/alertmanager/blob/yl_v0.20.0/dev.md) 添加云信和企业微信机器人报警通知方法
 
 ## 测点的prometheus配置文件定义
 
