@@ -4,13 +4,16 @@ import argparse
 import configparser
 import logging
 import os
-import consul
 import sys
+import consul
+from tabulate import tabulate
+
 
 config = configparser.ConfigParser()
-def add(args,client):
+TABLE_HEADER = ['Name', 'Address']
+
+def addSites(args,client):
     """ add monitor site """
-    global config
     logging.debug('begin add service')
     if not args.name:
         logging.fatal("invalid input name empty")
@@ -18,6 +21,40 @@ def add(args,client):
     if not args.url:
         logging.fatal("invalid input namurle empty")
         sys.exit("error of input")
+
+    service_name = args.name
+    address = args.url
+    meta = {}
+    meta['address'] =address
+    meta['service_name'] = service_name
+    ok = client.agent.service.register(service_name, meta=meta)
+    if ok:
+        print("create service ok")
+        # try to print service
+        services = [(service_name, address)]
+        print(tabulate(services, headers=TABLE_HEADER,  tablefmt='simple'))
+    else:
+        print("create service fail")
+
+def listSites(args, client):
+    """ list all serivce """
+    res = client.agent.services()
+    services = []
+    for k,v in res.items():
+       services.append((k, v['Meta']['address']))
+    print(tabulate(services, headers=TABLE_HEADER,  tablefmt='simple'))
+
+def removeSites(args, client):
+    """ list all serivce """
+    if not args.name:
+        logging.fatal("invalid input name empty")
+        sys.exit("error of input")
+    ok = client.agent.service.deregister(args.name)
+    if ok:
+        print("delete service %s  ok"%args.name)
+    else:
+        print("delete service %s  fail"%args.name)
+    
 
 def createConsul(args):
     """ 
@@ -37,7 +74,8 @@ def createConsul(args):
     else:
         port = 8500
     logging.debug('current server is %s:%d' %(server, port))
-    return consul.Consul(host=server, port=port)
+    client = consul.Consul(host=server, port=port)
+    return client
 
 def main():
     global config
@@ -48,16 +86,20 @@ def main():
     parser.add_argument('-p', '--port', help='server port for consul', required=False, type=int)
     parser.add_argument('-d', '--debug', help='show debug message for cli', action='store_true')
     subparsers = parser.add_subparsers(help='manage monitor target for site')
+    
     parser_add = subparsers.add_parser('add', help='add monitor site')
-    parser_add.add_argument('-n', '--name', help='name of site', dest='name')
+    parser_add.add_argument('name', help='name of site')
     parser_add.add_argument('-u', '--url', help='url for monitor', dest='url')
-    parser_add.add_argument('')
-    parser_add.set_defaults(func=add)
+    parser_add.set_defaults(func=addSites)
 
-    parser_remove = subparsers.add_parser('remove', help='remove monitor site by name')
     parser_list = subparsers.add_parser('list', help='list monitor site')
+    parser_list.set_defaults(func=listSites)
 
-    args = parser.parse_args("add".split())
+    parser_remove = subparsers.add_parser('remove', help='remove monitor site')
+    parser_remove.add_argument('name', help='name of site')
+    parser_remove.set_defaults(func=removeSites)
+
+    args = parser.parse_args()
     
     if args.debug == True:
         logging.basicConfig(level=logging.DEBUG)
@@ -66,13 +108,15 @@ def main():
     config.read(config_file)
 
     client = createConsul(args)
-    client.agent.Service.register()
     # run sub command
     try:
         args.func(args, client)
-    except AttributeError:
+    except AttributeError as ae:
+        logging.error("AttributeError: %s"%ae)
         parser.print_help()
         parser.exit()
+    except Exception as ex:
+        print("Exception: %s"%ex)
 
 if __name__ == "__main__":
     main()
