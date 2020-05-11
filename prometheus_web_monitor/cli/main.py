@@ -10,7 +10,7 @@ from tabulate import tabulate
 
 
 config = configparser.ConfigParser()
-TABLE_HEADER = ['Name', 'Address']
+TABLE_HEADER = ['Number', 'Name', 'Address']
 
 def addService(client, name, address):
     meta = {}
@@ -20,7 +20,7 @@ def addService(client, name, address):
     if ok:
         print("create service %s ok"%name)
         # try to print service
-        services = [(name, address)]
+        services = [(0, name, address)]
         print(tabulate(services, headers=TABLE_HEADER,  tablefmt='simple'))
     else:
         print("create service %s fail"%name)
@@ -51,8 +51,10 @@ def listSites(args, client):
     """ list all serivce """
     res = client.agent.services()
     services = []
+    no = 0
     for k,v in res.items():
-       services.append((k, v['Meta']['address']))
+       services.append((no, k, v['Meta']['address']))
+       no = no + 1
     print(tabulate(services, headers=TABLE_HEADER,  tablefmt='simple'))
 
 def removeSites(args, client):
