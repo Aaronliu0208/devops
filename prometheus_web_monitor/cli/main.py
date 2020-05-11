@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import argparse
 import configparser
@@ -12,29 +12,40 @@ from tabulate import tabulate
 config = configparser.ConfigParser()
 TABLE_HEADER = ['Name', 'Address']
 
+def addService(client, name, address):
+    meta = {}
+    meta['address'] =address
+    meta['service_name'] = name
+    ok = client.agent.service.register(name, meta=meta)
+    if ok:
+        print("create service %s ok"%name)
+        # try to print service
+        services = [(name, address)]
+        print(tabulate(services, headers=TABLE_HEADER,  tablefmt='simple'))
+    else:
+        print("create service %s fail"%name)
+
 def addSites(args,client):
     """ add monitor site """
     logging.debug('begin add service')
-    if not args.name:
-        logging.fatal("invalid input name empty")
-        sys.exit("error of input")
-    if not args.url:
-        logging.fatal("invalid input namurle empty")
-        sys.exit("error of input")
-
-    service_name = args.name
-    address = args.url
-    meta = {}
-    meta['address'] =address
-    meta['service_name'] = service_name
-    ok = client.agent.service.register(service_name, meta=meta)
-    if ok:
-        print("create service ok")
-        # try to print service
-        services = [(service_name, address)]
-        print(tabulate(services, headers=TABLE_HEADER,  tablefmt='simple'))
+    
+    if args.input:
+        # read input files and add loop
+        with open(args.input,'r') as targetFile:
+            for line in targetFile:
+                info = line.strip().split(',')
+                name = info[0]
+                address = info[1]
+                addService(client, name, address)
     else:
-        print("create service fail")
+        if not args.name:
+            logging.fatal("invalid input name empty")
+            sys.exit("error of input")
+        if not args.url:
+            logging.fatal("invalid input namurle empty")
+            sys.exit("error of input")
+        addService(client, args.name, args.url)
+   
 
 def listSites(args, client):
     """ list all serivce """
@@ -88,7 +99,10 @@ def main():
     subparsers = parser.add_subparsers(help='manage monitor target for site')
     
     parser_add = subparsers.add_parser('add', help='add monitor site')
-    parser_add.add_argument('name', help='name of site')
+
+    group = parser_add.add_mutually_exclusive_group()
+    group.add_argument('-i', '--input', help='input csv file for batch add, with name, url')
+    group.add_argument('-n','--name', help='name of site')
     parser_add.add_argument('-u', '--url', help='url for monitor', dest='url')
     parser_add.set_defaults(func=addSites)
 
