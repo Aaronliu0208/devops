@@ -3,6 +3,7 @@ modules:
     prober: http
     http:
       valid_status_codes: [200, 301, 302]
+      preferred_ip_protocol: ip4
       tls_config:
         insecure_skip_verify: true
   http_post_2xx:
