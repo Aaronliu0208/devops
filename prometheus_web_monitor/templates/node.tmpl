@@ -8,7 +8,7 @@
 故障站点: {{ .Labels.site }}
 故障描述: {{ .Annotations.summary }}
 故障监测点: {{ .Labels.job }}
-触发时间: {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+触发时间: {{ .StartsAt.Local.Format "2006-01-02 15:04:05" }}
 {{ end }}
 {{- end }}
 {{ if gt (len .Alerts.Resolved) 0 -}}
@@ -20,8 +20,8 @@
 故障站点: {{ .Labels.site }}
 故障描述: {{ .Annotations.summary }}
 故障监测点: {{ .Labels.job }}
-触发时间: {{ .StartsAt.Format "2006-01-02 15:04:05" }}
-恢复时间: {{ .EndsAt.Format "2006-01-02 15:04:05" }}
+触发时间: {{ .StartsAt.Local.Format "2006-01-02 15:04:05" }}
+恢复时间: {{ .EndsAt.Local.Format "2006-01-02 15:04:05" }}
 {{ end }}
 {{- end }}
 {{- end }}
