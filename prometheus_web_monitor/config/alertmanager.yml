@@ -12,6 +12,10 @@ route:
   group_interval: 10s
   repeat_interval: 1h
   receiver: 'htyx'
+  routes:
+  - receiver: 'web.hook'
+    continue: true
+  - receiver: 'htyx'
 receivers:
 - name: 'htyx'
   htyx_configs:
@@ -20,5 +24,8 @@ receivers:
     api_secret: '-j8sK32tdcyWuEcwdXtIz7B8k1CmJXE_A5NuwLhRPOA'
     corp_id: 'wlb07f8823a2'
     agent_id: '1000091'
-    chat_id: '5090474953864258104'
+    chat_id: '14942099138737219377'
     message: '{{ template "site.default.message" . }}'
+- name: 'web.hook'
+  webhook_configs:
+  - url: 'http://172.20.4.86:5001/'

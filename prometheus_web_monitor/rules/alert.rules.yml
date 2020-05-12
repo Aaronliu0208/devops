@@ -3,12 +3,12 @@ groups:
   rules:
   - alert: BlackboxProbeFailed
     expr: probe_success == 0
-    for: 5m
+    for: 1m
     labels:
       severity: error
     annotations:
       summary: "Blackbox probe failed (instance {{ $labels.instance }})"
-      description: "Probe failed\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+      description: "Probe failed\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }} for 1m"
   - alert: BlackboxSlowProbe
     expr: avg_over_time(probe_duration_seconds[1m]) > 10
     for: 5m
