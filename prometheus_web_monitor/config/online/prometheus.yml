@@ -1,0 +1,393 @@
+# my global config
+global:
+  scrape_interval:     15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+  # scrape_timeout is set to the global default (10s).
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      - localhost:9093
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+  # - "es_rules.yml"
+  - "/usr/local/prometheus/rules/ceph_rules.yml"
+  - "/usr/local/prometheus/rules/elasticsearch.rules.yml"
+  - "/usr/local/prometheus/rules/k8s_rules.yml"
+  - "/usr/local/prometheus/rules/node_rules.yml"
+  - "/usr/local/prometheus/rules/mysql_rules.yml"
+  - "/usr/local/prometheus/rules/redis_rules.yml"
+  - "/usr/local/prometheus/rules/zookeeper_rules.yml"
+  - "/usr/local/prometheus/rules/blackbox_rules.yml"
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: 'prometheus'
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+
+    metrics_path: "/prometheus/metrics"
+    static_configs:
+    - targets: ['localhost:9090']
+
+  - job_name: 'ceph-cluster'
+    static_configs:
+    - targets: 
+      - 10.153.51.204:9283
+      - 10.153.51.203:9283
+      - 10.153.51.205:9283
+
+############## Mysql config #########################
+  - job_name: 'mysql'
+    static_configs:
+    - targets:
+      - 10.153.40.204:9104
+      - 10.153.40.205:9104
+      - 10.153.40.206:9104
+      - 10.153.40.207:9104
+      - 10.153.40.208:9104
+      - 10.153.40.209:9104
+      - 10.153.51.55:9104
+      - 10.153.51.70:9104
+      - 10.153.51.71:9104
+
+
+############## Redis config ##########################
+  - job_name: 'redis-uc'
+    static_configs:
+    - targets:
+      - 10.153.51.196:9119
+      - 10.153.51.196:9120
+      - 10.153.51.196:9121
+      - 10.153.51.196:9122
+      - 10.153.51.196:9123
+      - 10.153.51.196:9124
+      - 10.153.51.196:9125
+
+  - job_name: 'redis-microservice'
+    static_configs:
+    - targets:  
+      - 10.153.51.196:9130
+      - 10.153.51.196:9131
+      - 10.153.51.196:9132
+      - 10.153.51.196:9133
+      - 10.153.51.196:9134
+      - 10.153.51.196:9135
+      
+
+
+#################### Nginx config  ###################
+  - file_sd_configs:
+    - files:
+      - 'configs/nginx.yml'
+    job_name: Nginx Server
+    metrics_path: /metrics
+    relabel_configs:
+    - source_labels: [__address__]
+      regex: (.*)
+      target_label: instance
+      replacement: $1
+    - source_labels: [__address__]
+      regex: (.*)
+      target_label: __address__
+      replacement: $1:9913
+
+################### Docker config ####################
+  - file_sd_configs:
+    - files:
+      - 'configs/docker.yml'
+    job_name: Docker Server
+    metrics_path: /metrics
+    relabel_configs:
+    - source_labels: [__address__]
+      regex: (.*)
+      target_label: instance
+      replacement: $1
+    - source_labels: [__address__]
+      regex: (.*)
+      target_label: __address__
+      replacement: $1:9401
+
+
+#################### Windows config ###################
+  - job_name: 'windows'
+    static_configs:
+    - targets:
+      - 10.153.51.81:9182
+      - 10.153.51.31:9182
+      - 10.153.51.141:9182
+      - 10.153.51.142:9182
+      - 10.153.51.145:9182
+      - 10.153.51.158:9182
+   
+##################### Host config ######################
+  - job_name: 'node'
+    static_configs:
+    - targets:
+      - 10.153.51.181:9100
+      - 10.153.51.196:9100
+      - 10.153.40.114:9100
+      - 10.153.40.115:9100
+      - 10.153.40.116:9100
+      - 10.153.40.117:9100
+      - 10.153.40.118:9100
+      - 10.153.40.119:9100
+      - 10.153.40.120:9100
+      - 10.153.40.121:9100
+      - 10.153.40.122:9100
+      - 10.153.40.123:9100
+      - 10.153.40.124:9100
+      - 10.153.40.125:9100
+      - 10.153.40.142:9100
+      - 10.153.40.204:9100
+      - 10.153.40.205:9100
+      - 10.153.40.206:9100
+      - 10.153.40.207:9100
+      - 10.153.40.208:9100
+      - 10.153.40.209:9100
+      - 10.153.40.210:9100
+      - 10.153.40.211:9100
+      - 10.153.40.212:9100
+      - 10.153.40.216:9100
+      - 10.153.40.217:9100
+      - 10.153.40.218:9100
+      - 10.153.40.219:9100
+      - 10.153.40.220:9100
+      - 10.153.40.221:9100
+      - 10.153.40.222:9100
+      - 10.153.40.223:9100
+      - 10.153.40.225:9100
+      - 10.153.40.226:9100
+      - 10.153.40.227:9100
+      - 10.153.40.228:9100
+      - 10.153.40.229:9100
+      - 10.153.40.87:9100
+      - 10.153.42.68:9100
+      - 10.153.42.62:9100
+      - 10.153.42.63:9100
+      - 10.153.42.75:9100
+      - 10.153.42.87:9100
+      - 10.153.51.1:9100
+      - 10.153.51.10:9100
+      - 10.153.51.11:9100
+      - 10.153.51.110:9100
+      - 10.153.51.112:9100
+      - 10.153.51.114:9100
+      - 10.153.51.115:9100
+      - 10.153.51.12:9100
+      - 10.153.51.13:9100
+      - 10.153.51.133:9100
+      - 10.153.51.138:9100
+      - 10.153.51.14:9100
+      - 10.153.51.155:9100
+      - 10.153.51.156:9100
+      - 10.153.51.157:9100
+      - 10.153.51.159:9100
+      - 10.153.51.16:9100
+      - 10.153.51.167:9100
+      - 10.153.51.170:9100
+      - 10.153.51.171:9100
+      - 10.153.51.172:9100
+      - 10.153.51.173:9100
+      - 10.153.51.174:9100
+      - 10.153.51.175:9100
+      - 10.153.51.176:9100
+      - 10.153.51.177:9100
+      - 10.153.51.178:9100
+      - 10.153.51.179:9100
+      - 10.153.51.180:9100
+      - 10.153.51.181:9100
+      - 10.153.51.182:9100
+      - 10.153.51.183:9100
+      - 10.153.51.184:9100
+      - 10.153.51.185:9100
+      - 10.153.51.186:9100
+      - 10.153.51.187:9100
+      - 10.153.51.189:9100
+      - 10.153.51.190:9100
+      - 10.153.51.191:9100
+      - 10.153.51.192:9100
+      - 10.153.51.193:9100
+      - 10.153.51.194:9100
+      - 10.153.51.195:9100
+      - 10.153.51.196:9100
+      - 10.153.51.197:9100
+      - 10.153.51.198:9100
+      - 10.153.51.199:9100
+      - 10.153.51.2:9100
+      - 10.153.51.200:9100
+      - 10.153.51.201:9100
+      - 10.153.51.202:9100
+      - 10.153.51.203:9100
+      - 10.153.51.204:9100
+      - 10.153.51.205:9100
+      - 10.153.51.206:9100
+      - 10.153.51.207:9100
+      - 10.153.51.208:9100
+      - 10.153.51.209:9100
+      - 10.153.51.210:9100
+      - 10.153.51.218:9100
+      - 10.153.51.219:9100
+      - 10.153.51.22:9100
+      - 10.153.51.24:9100
+      - 10.153.51.25:9100
+      - 10.153.51.36:9100
+      - 10.153.51.37:9100
+      - 10.153.51.38:9100
+      - 10.153.51.39:9100
+      - 10.153.51.4:9100
+      - 10.153.51.41:9100
+      - 10.153.51.43:9100
+      - 10.153.51.44:9100
+      - 10.153.51.48:9100
+      - 10.153.51.49:9100
+      - 10.153.51.5:9100
+      - 10.153.51.50:9100
+      - 10.153.51.53:9100
+      - 10.153.51.54:9100
+      - 10.153.51.55:9100
+      - 10.153.51.59:9100
+      - 10.153.51.6:9100
+      - 10.153.51.60:9100
+      - 10.153.51.61:9100
+      - 10.153.51.62:9100
+      - 10.153.51.64:9100
+      - 10.153.51.66:9100
+      - 10.153.51.67:9100
+      - 10.153.51.7:9100
+      - 10.153.51.70:9100
+      - 10.153.51.71:9100
+      - 10.153.51.72:9100
+      - 10.153.51.73:9100
+      - 10.153.51.8:9100
+      - 10.153.51.9:9100
+
+
+############# Elasticsearch config ####################
+  - job_name: elasticsearch
+    scrape_interval: 60s
+    scrape_timeout:  30s
+    metrics_path: "/metrics"
+    static_configs:
+    - targets:
+      - 10.153.40.216:9108
+      - 10.153.40.217:9108
+      - 10.153.40.218:9108
+      - 10.153.51.218:9108
+      - 10.153.51.219:9108
+      - 10.153.40.225:9108
+      - 10.153.40.226:9108
+      - 10.153.51.44:9108
+      - 10.153.51.190:9108
+      labels:
+        service: elasticsearch
+    relabel_configs:
+    - source_labels: [__address__]
+      regex: '(.*)\:9108'
+      target_label:  'instance'
+      replacement:   '$1'
+    - source_labels: [__address__]
+      regex:         '.*\.(.*)\.lan.*'
+      target_label:  'environment'
+      replacement:   '$1'
+  # - job_name: 'gitlab_exporters'
+  #   static_configs:
+  #   - targets: ['10.153.51.199:8082', '10.153.51.199:9168', '10.153.51.199:9236', '10.153.51.199:9229', '10.153.51.199:9100', '10.153.51.199:9121', '10.153.51.199:9187']
+
+  # - job_name: 'gitlab_metrics'
+  #   metrics_path: /-/metrics
+  #   static_configs:
+  #   - targets: ['10.153.51.199:443']
+  - job_name: 'kylin'
+    static_configs:
+    - targets: ['10.153.51.14:9722']
+
+  ############ k8s config ############
+
+  - job_name: 'kubernetes-federate'
+    scrape_interval: 60s
+    scrape_timeout:  60s
+    honor_labels: true
+    metrics_path: '/federate'
+    params:
+      'match[]':
+        - '{job=~".+"}'
+    static_configs:
+      - targets:
+        - 10.153.51.208:30094
+
+  ############# zookeeper config #############
+  - job_name: 'zookeeper'
+    static_configs:
+    - targets:
+      - 10.153.51.13:8000
+      - 10.153.40.118:8000
+      - 10.153.40.117:8000
+      - 10.153.51.67:8000
+      - 10.153.51.62:8000
+      - 10.153.51.115:8000
+
+  ############ coredns ############
+  - job_name: 'coredns'
+    static_configs:
+    - targets:
+      - 10.153.51.183:9153
+  ############ black box ##############
+  - job_name: 'neimeng_blackbox'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]  # Look for a HTTP 200 response.
+    consul_sd_configs:
+      - server: '10.153.51.181:8500'
+        scheme: 'http'
+        datacenter: 'dc1'
+        refresh_interval: '2s'    
+    relabel_configs:
+      - source_labels: [__meta_consul_service_metadata_address]
+        target_label: __param_target
+      - source_labels: [__meta_consul_service_metadata_address]
+        target_label: site
+      - source_labels: [__meta_consul_service_metadata_service_name]
+        target_label: instance
+      - target_label: __address__
+        replacement: 10.153.51.181:9115  # The blackbox exporter's real hostname:port.
+      - source_labels: [__meta_consul_service]
+        regex: "consul"
+        action: drop
+      - target_label: service
+        replacement: blackbox
+      - target_label: region
+        replacement: neimeng
+  - job_name: 'aliyun_bj_blackbox'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]  # Look for a HTTP 200 response.
+    consul_sd_configs:
+      - server: '10.153.51.181:8500'
+        scheme: 'http'
+        datacenter: 'dc1'
+        refresh_interval: '2s'    
+    relabel_configs:
+      - source_labels: [__meta_consul_service_metadata_address]
+        target_label: __param_target
+      - source_labels: [__meta_consul_service_metadata_address]
+        target_label: site
+      - source_labels: [__meta_consul_service_metadata_service_name]
+        target_label: instance
+      - target_label: __address__
+        replacement: 10.153.51.181:9116  # The blackbox exporter's real hostname:port.
+      - source_labels: [__meta_consul_service]
+        regex: "consul"
+        action: drop
+      - target_label: service
+        replacement: blackbox
+      - target_label: region
+        replacement: neimeng

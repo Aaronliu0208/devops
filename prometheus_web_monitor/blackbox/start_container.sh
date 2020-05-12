@@ -57,6 +57,7 @@ CONTAINER_NAME=monitor_$BX_NAME
 docker rm -f $CONTAINER_NAME
 docker run -d --name $CONTAINER_NAME \
     -v $PWD/frpc.ini:/etc/blackbox_exporter/frpc.ini \
+    -v $PWD/blackbox.yml:/etc/blackbox_exporter/config.yml \
     hub.htres.cn/pub/blackbox-exporter
 
 echo blackbox container $CONTAINER_NAME started!!!

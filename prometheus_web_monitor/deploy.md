@@ -13,9 +13,9 @@
 
 10.153.51.181:9115 blackbox-neimeng 云路内蒙站点监控采集点，部署在docker中
 
-10.153.51.181:9116 blackbox-aliyun-bj 云路阿里云北京监控采集点 使用frps技术穿透到阿里云，部署在docker中
+10.153.51.181:9116 aliyun_beijing 云路阿里云北京监控采集点 使用frps技术穿透到阿里云，部署在docker中
 
-10.153.51.181:9117 blackbox-aliyun-hk 云路阿里云香港监控采集点 使用frps技术穿透到阿里云，部署在docker中
+10.153.51.181:9117 aliyun_hongkong 云路阿里云香港监控采集点 使用frps技术穿透到阿里云，部署在docker中
 
 blackbox-k8s 在k8s中运行blackbox
 
