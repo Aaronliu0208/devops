@@ -1,0 +1,97 @@
+global:
+  resolve_timeout: 5m
+  http_config:
+    tls_config:
+      insecure_skip_verify: true
+
+templates:
+- '/usr/local/alertmanager/ceph.tmpl'
+- '/usr/local/alertmanager/es.tmpl'
+- '/usr/local/alertmanager/k8s-wechat.tmpl'
+- '/usr/local/alertmanager/node.tmpl'
+- '/usr/local/alertmanager/site.tmpl'
+route:
+  group_by: ['alertname']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 1h
+  receiver: 'wechat1000003'
+  routes:
+  - receiver: 'htyx_blackbox'
+    match:
+      service: 'blackbox'
+
+  - receiver: 'wechat_unschedulable'
+#    group_by: ['node']
+    match:
+      alertname: 'Unschedulable Node'
+
+ # routes:
+  - receiver: 'htyx_node'
+   # group_by: ['node']
+
+  - receiver: 'wechat_mysql'
+    group_by: ['MySQLStatsAlert']
+
+receivers:
+- name: 'wechat1000003' #微信的配置
+  wechat_configs:
+  - corp_id: 'wx5df686548b138675'  #企业微信都有的四个字段
+    to_party: '4'
+    agent_id: '1000003'
+    api_secret: '_qqlL4zS9Nf3noK4FjHj9hdc9IhSxawVSIsLSDyP0NU'
+    send_resolved: true 
+  webhook_configs:
+  - url: http://10.153.51.38:5000/send
+    send_resolved: true
+
+- name: 'wechat_node'
+  wechat_configs:
+  - corp_id: 'wx5df686548b138675'
+   # to_party: '4'
+    to_user: '@all'
+    agent_id: '1000010'
+    api_secret: 'CD0I2oWXu3q79LEC3e0Cow7b3yLIHVIquNhegwahlpQ'
+    message: '{{ template "node.wechat.message" . }}'
+    send_resolved: true
+
+- name: 'wechat_mysql'
+  wechat_configs:
+  - corp_id: 'wx5df686548b138675'
+    to_user: '@all'
+    agent_id: '1000011'
+    api_secret: '7V4SqVNSAGSg_S4aXC1BOs9mB4a90VsQi_stNQSLq38'
+    message: '{{ template "node.wechat.message" . }}'
+    send_resolved: true
+
+- name: 'wechat_unschedulable'
+  wechat_configs:
+  - corp_id: 'wx5df686548b138675'  #企业微信都有的四个字段
+    to_party: '4'
+#    agent_id: '1000005'
+#    api_secret: 'khxpz8sfRB0Otyy78GsePZLU-UMbQXqpuyVlGjzX1Ho'
+    agent_id: '1000004'
+    api_secret: 'hsRv3xCyGc9yghkToJcJVADDSqkF7UGtzTQGklCdwWs'
+#    agent_id: '1000003'
+#    api_secret: '_qqlL4zS9Nf3noK4FjHj9hdc9IhSxawVSIsLSDyP0NU'
+    message: '{{ template "k8s.wechat.message.unschedulable" . }}'
+    send_resolved: true 
+- name: 'htyx_blackbox'
+  htyx_configs:
+  - send_resolved: true
+    api_url: 'https://htyx.casicloud.com/cgi-bin/'
+    api_secret: '-j8sK32tdcyWuEcwdXtIz7B8k1CmJXE_A5NuwLhRPOA'
+    corp_id: 'wlb07f8823a2'
+    agent_id: '1000091'
+    chat_id: '5090474953864258104'
+    message: '{{ template "site.default.message" . }}'
+- name: 'htyx_node'
+  htyx_configs:
+  - send_resolved: true
+    api_url: 'https://htyx.casicloud.com/cgi-bin/'
+    api_secret: '-j8sK32tdcyWuEcwdXtIz7B8k1CmJXE_A5NuwLhRPOA'
+    corp_id: 'wlb07f8823a2'
+    agent_id: '1000091'
+    chat_id: '18140780774077114153'
+    message: '{{ template "node.wechat.message" . }}'
+
