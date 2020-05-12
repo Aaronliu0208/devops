@@ -112,3 +112,14 @@ curl -X PUT -d '{
 }' http://localhost:8500/v1/agent/service/register
 ```
 同时在[cli](cli)中增加了命令行工具管理站点
+
+## 尝试使用alertmanager webhook  收集所有报警信息
+参考https://github.com/cloudflare/alertmanager2es
+我们可以将alertmanager里面发生的所有报警收集到es中，进行聚合与检索。为了不影响其他的`receiver`。需要修改alert配置。样例如下:
+```yaml
+routes:
+  - receiver: 'web.hook'
+    continue: true
+  - receiver: 'htyx'
+```
+配置webhook的`continue`为true并且放在最前面
