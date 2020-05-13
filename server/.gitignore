@@ -24,3 +24,11 @@ _output
 .vscode
 vendor
 
+*.DS_Store
+/cmd/ylops/gin-admin
+/cmd/ylops/data
+/release
+/data
+/internal/app/test/data
+/tmp
+
