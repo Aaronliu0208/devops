@@ -1,68 +1,20 @@
+/*
+Copyright © 2020 NAME HERE <EMAIL ADDRESS>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 package main
 
-import (
-	"context"
-	"os"
-
-	"casicloud.com/ylops/backend/internal/app"
-	"casicloud.com/ylops/backend/pkg/logger"
-	"casicloud.com/ylops/backend/version"
-	"github.com/urfave/cli/v2"
-)
-
-// VERSION 版本号，可以通过编译的方式指定版本号：go build -ldflags "-X main.VERSION=x.x.x"
-var VERSION = version.Version
-
 func main() {
-	logger.SetVersion(VERSION)
-	ctx := logger.NewTraceIDContext(context.Background(), "main")
-
-	app := cli.NewApp()
-	app.Name = "gin-admin"
-	app.Version = VERSION
-	app.Usage = "RBAC scaffolding based on GIN + GORM/MONGO + CASBIN + WIRE."
-	app.Commands = []*cli.Command{
-		newWebCmd(ctx),
-	}
-	err := app.Run(os.Args)
-	if err != nil {
-		logger.Errorf(ctx, err.Error())
-	}
-}
-
-func newWebCmd(ctx context.Context) *cli.Command {
-	return &cli.Command{
-		Name:  "web",
-		Usage: "运行web服务",
-		Flags: []cli.Flag{
-			&cli.StringFlag{
-				Name:     "conf",
-				Aliases:  []string{"c"},
-				Usage:    "配置文件(.json,.yaml,.toml)",
-				Required: true,
-			},
-			&cli.StringFlag{
-				Name:     "model",
-				Aliases:  []string{"m"},
-				Usage:    "casbin的访问控制模型(.conf)",
-				Required: true,
-			},
-			&cli.StringFlag{
-				Name:  "menu",
-				Usage: "初始化菜单数据配置文件(.yaml)",
-			},
-			&cli.StringFlag{
-				Name:  "www",
-				Usage: "静态站点目录",
-			},
-		},
-		Action: func(c *cli.Context) error {
-			return app.Run(ctx,
-				app.SetConfigFile(c.String("conf")),
-				app.SetModelFile(c.String("model")),
-				app.SetWWWDir(c.String("www")),
-				app.SetMenuFile(c.String("menu")),
-				app.SetVersion(VERSION))
-		},
-	}
+	Execute()
 }

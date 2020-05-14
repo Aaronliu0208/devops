@@ -1,7 +1,8 @@
+# make file for alb project
 # define global variable
 SHELL:=/bin/bash
-PROJ=ylops
-ORG_PATH=casicloud.com/ylops/backend
+PROJ=backend
+ORG_PATH=casicloud.com/ylops
 REPO_PATH=$(ORG_PATH)/$(PROJ)
 export PATH := $(PWD)/bin:$(PATH)
 export GOBIN=$(PWD)/bin
@@ -13,29 +14,26 @@ LD_FLAGS="-w -X $(REPO_PATH)/version.Version=$(VERSION)"
 
 SRCS := $(shell find . -name '*.go'| grep -v vendor)
 
-.PHONY: start build
+build: bin/ylops
 
-NOW = $(shell date -u '+%Y%m%d%I%M%S')
-
-APP = ${PROJ}
-
-all: start
-
-build:
-	@go install -ldflags $(LD_FLAGS)  ./cmd/${APP}
-
-start: 
-	@echo ${PWD}
-	@./bin/${APP} web -c ./configs/config.toml -m ./configs/model.conf --menu ./configs/menu.yaml
-
-swagger:
-	swag init --generalInfo ./internal/app/swagger.go --output ./internal/app/swagger
-
-wire:
-	wire gen ./internal/app/injector
-
-test:
-	@go test -v ./internal/app/test
+bin/ylops:
+	@go install -v -ldflags $(LD_FLAGS) $(REPO_PATH)/cmd/ylops
 
 clean:
-	@rm -rf data bin ./internal/app/test/data ./cmd/${APP}/data
+	@rm -rf bin/
+
+.PHONY: version
+version:
+	@echo $(VERSION)
+
+test:
+	@go test -v ./...
+
+.PHONY: lint
+lint: 
+	@for file in $(SRCS); do \
+		golint $${file}; \
+		if [ -n "$$(golint $${file})" ]; then \
+			exit 1; \
+		fi; \
+	done
