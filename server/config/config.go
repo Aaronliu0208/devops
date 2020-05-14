@@ -18,6 +18,7 @@ var (
 // Config 程序配置类
 type Config struct {
 	HTTP HTTP `yaml:"http,omitempty"`
+	Log  Log  `yaml:"log,omitempty"`
 }
 
 // HTTP http config
@@ -27,6 +28,22 @@ type HTTP struct {
 	CertFile        string `yaml:"cert_file,omitempty"`
 	KeyFile         string `yaml:"key_file,omitempty"`
 	ShutdownTimeout int    `yaml:"shutdown_timeout,omitempty"`
+}
+
+// LogHook 日志钩子
+type LogHook string
+
+// Log 日志配置参数
+type Log struct {
+	Level         int
+	Format        string
+	Output        string
+	OutputFile    string
+	EnableHook    bool
+	HookLevels    []string
+	Hook          LogHook
+	HookMaxThread int
+	HookMaxBuffer int
 }
 
 // Load the config file from the current directory and marshal

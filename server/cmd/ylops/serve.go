@@ -16,23 +16,24 @@ limitations under the License.
 package main
 
 import (
-	"fmt"
+	"context"
 
+	"casicloud.com/ylops/backend/app"
+	"casicloud.com/ylops/backend/pkg/logger"
+	"casicloud.com/ylops/backend/version"
 	"github.com/spf13/cobra"
 )
 
 // serveCmd represents the serve command
 var serveCmd = &cobra.Command{
 	Use:   "serve",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "run server",
+	Long:  `run api server for ylops`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("serve called")
+		logger.SetVersion(version.Version)
+		ctx := logger.NewTraceIDContext(context.Background(), "main")
+		app.Run(ctx)
+
 	},
 }
 

@@ -16,7 +16,7 @@ SRCS := $(shell find . -name '*.go'| grep -v vendor)
 
 build: bin/ylops
 
-bin/ylops:
+bin/ylops: ${SRCS}
 	@go install -v -ldflags $(LD_FLAGS) $(REPO_PATH)/cmd/ylops
 
 clean:
