@@ -3,7 +3,7 @@ module casicloud.com/ylops/backend
 go 1.13
 
 require (
-	github.com/gin-gonic/gin v1.6.3 // indirect
+	github.com/gin-gonic/gin v1.6.3
 	github.com/golang/protobuf v1.4.1 // indirect
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/sirupsen/logrus v1.2.0
