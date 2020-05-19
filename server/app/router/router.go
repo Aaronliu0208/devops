@@ -1,8 +1,14 @@
 package router
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/google/wire"
+)
 
 var _ IRouter = (*Router)(nil) //告送编译器静态检查Router是否实现接口IRouter, 下划线告诉编译器要有效地放弃RHS值
+
+// RouterSet 注入router
+var RouterSet = wire.NewSet(wire.Struct(new(Router), "*"), wire.Bind(new(IRouter), new(*Router)))
 
 // IRouter 注册路由
 type IRouter interface {

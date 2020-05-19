@@ -17,8 +17,9 @@ var (
 
 // Config 程序配置类
 type Config struct {
-	HTTP HTTP `yaml:"http,omitempty"`
-	Log  Log  `yaml:"log,omitempty"`
+	RunMode string
+	HTTP    HTTP `yaml:"http,omitempty"`
+	Log     Log  `yaml:"log,omitempty"`
 }
 
 // HTTP http config

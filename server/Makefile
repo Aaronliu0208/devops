@@ -26,6 +26,9 @@ clean:
 version:
 	@echo $(VERSION)
 
+wire:
+	wire gen ./injector
+
 test:
 	@go test -v ./...
 
