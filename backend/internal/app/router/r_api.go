@@ -85,5 +85,14 @@ func (a *Router) RegisterAPI(app *gin.Engine) {
 			gUser.PATCH(":id/enable", a.UserAPI.Enable)
 			gUser.PATCH(":id/disable", a.UserAPI.Disable)
 		}
+
+		gAlert := v1.Group("alerts")
+		{
+			gAlert.GET("", a.DemoAPI.Query)
+			gAlert.GET(":id", a.DemoAPI.Get)
+			gAlert.POST("", a.DemoAPI.Create)
+			gAlert.PUT(":id", a.DemoAPI.Update)
+			gAlert.DELETE(":id", a.DemoAPI.Delete)
+		}
 	}
 }

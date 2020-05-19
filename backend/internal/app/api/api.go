@@ -9,4 +9,5 @@ var APISet = wire.NewSet(
 	MenuSet,
 	RoleSet,
 	UserSet,
+	AlertSet,
 )
