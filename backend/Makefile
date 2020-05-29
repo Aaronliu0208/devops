@@ -29,6 +29,8 @@ version:
 wire:
 	wire gen ./internal/app/injector
 
+swagger:
+	swag init --generalInfo ./internal/app/swagger.go --output ./internal/app/swagger
 test:
 	@go test -v ./...
 
