@@ -40,3 +40,6 @@ __pycache__/
 ### bash nohup output ###
 nohup.out
 frpc*.ini
+
+## vscode debug bin
+__debug_bin
