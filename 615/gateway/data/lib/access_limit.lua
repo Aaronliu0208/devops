@@ -13,8 +13,10 @@ if not delay then
     if err == "rejected" then
         ngx.header["X-RateLimit-Limit"] = tostring(rate_pre_second)
         ngx.header["X-RateLimit-Remaining"] = 0
-            --每秒请求超过100次的就报错403
-        return ngx.exit(403)
+        --每秒请求超过100次的就报错403
+        --return ngx.exit(403)
+        -- 一旦负载高于每秒100个请求就重定向到百度
+        return ngx.redirect("http://www.baidu.com", ngx.HTTP_MOVED_TEMPORARILY)
     end
     ngx.log(ngx.ERR, "failed to limit count: ", err)
 
