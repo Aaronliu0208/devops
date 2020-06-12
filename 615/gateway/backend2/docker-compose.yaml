@@ -1,0 +1,9 @@
+version: "3"
+services:
+  resty:
+      image: registry.cn-beijing.aliyuncs.com/ylpub/resty-buster
+      ports:
+        - "8082:80"
+      volumes:
+        - "./conf.d:/openresty/nginx/conf/conf.d"
+        - "./logs:/openresty/nginx/logs"
