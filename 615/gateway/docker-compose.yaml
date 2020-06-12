@@ -7,5 +7,6 @@ services:
       volumes:
         - "./data/conf.d:/openresty/nginx/conf/conf.d"
         - "./data/html:/openresty/nginx/html"
+        - "./data/video:/data/video"
         - "./data/lib:/openresty/nginx/lib"
         - "./data/logs:/openresty/nginx/logs"

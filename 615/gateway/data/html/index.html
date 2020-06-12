@@ -1,1 +1,66 @@
-hello sam
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,minimal-ui">
+    <meta name="referrer" content="no-referrer">
+    <title>播放器</title>
+    <style type="text/css">
+      html, body {width:100%;height:100%;margin:auto;overflow: hidden;}
+      body {display:flex;}
+      #mse {flex:auto;}
+    </style>
+    <script type="text/javascript">
+      window.addEventListener('resize',function(){document.getElementById('mse').style.height=window.innerHeight+'px';});
+    </script>
+  </head>
+  <body>
+    <div id="mse"></div>
+    <script src="//cdn.jsdelivr.net/npm/xgplayer/browser/index.js" charset="utf-8"></script>
+    <script src="//cdn.jsdelivr.net/npm/xgplayer-mp4/browser/index.js" charset="utf-8"></script>
+    <script type="text/javascript">
+      let player=new Player({
+        id: 'mse',
+        autoplay: true,
+        volume: 0.3,
+        url:'/upvideo/fcydswjcz.mp4',
+        //url:'https://video.ht2025.com/sv/2f8a2349-172a1cf88fa/2f8a2349-172a1cf88fa.mp4',
+        poster: "//s2.pstatp.com/cdn/expire-1-M/byted-player-videos/1.0.0/poster.jpg",
+        playsinline: true,
+        thumbnail: {
+            pic_num: 44,
+            width: 160,
+            height: 90,
+            col: 10,
+            row: 10,
+            urls: ['//s3.pstatp.com/cdn/expire-1-M/byted-player-videos/1.0.0/xgplayer-demo-thumbnail.jpg'],
+        },
+        danmu: {
+          comments: [
+            {
+              duration: 15000,
+              id: '1',
+              start: 3000,
+              txt: '长弹幕长弹幕长弹幕长弹幕长弹幕',
+              style: {  //弹幕自定义样式
+                color: '#ff9500',
+                fontSize: '20px',
+                border: 'solid 1px #ff9500',
+                borderRadius: '50px',
+                padding: '5px 11px',
+                backgroundColor: 'rgba(255, 255, 255, 0.1)'
+              }
+            }
+          ],
+          area: {
+            start: 0,
+            end: 1
+          }
+        },
+        height: window.innerHeight,
+        width: window.innerWidth,
+        whitelist: ['']
+      });
+    </script>
+  </body>
+</html>
