@@ -46,13 +46,13 @@ def main():
 
     secret = []
     for host in hosts:
-        logging.debug('==========begin detect host %s' %(host_file))
+        logging.debug('==========begin detect host %s' %(host))
         users = parseUsers(host)
         for u in users:
             keys = parsePubkey(host, u)
             for k in keys:
                 secret.append(SecretInfo(host, u, k.decode("utf-8").strip()))
-                
+
     with open('secretinfo.csv','w') as f:
         w = csv.writer(f, quotechar='"')
         for s in secret:
