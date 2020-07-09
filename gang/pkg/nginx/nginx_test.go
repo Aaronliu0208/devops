@@ -122,5 +122,7 @@ func TestMarshalDirective(t *testing.T) {
 	http := NewBlock("http")
 	http.AddDirectives(globalConfig)
 	config.AddDirective(http)
+	customBlk := NewCustomBlock("init_by_lua", "kong.init()\nngx.say(ngx.var.arg_a)")
+	http.AddDirective(customBlk)
 	fmt.Println(config)
 }

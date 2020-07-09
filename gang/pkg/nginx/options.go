@@ -27,3 +27,8 @@ func NewKeyValueOption(name string, value interface{}) *KeyValueOption {
 func (k KeyValueOption) String() string {
 	return k.Base.Render(fmt.Sprintf("%s %s;", k.name, k.value))
 }
+
+//Value implements Directive
+func (k KeyValueOption) Value() interface{} {
+	return k.value
+}

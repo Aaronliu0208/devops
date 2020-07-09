@@ -87,8 +87,3 @@ func (b *Base) SetParent(parent interface{}) {
 func (b Base) Name() string {
 	return b.name
 }
-
-//Value implements Directive Interface
-func (b Base) Value() interface{} {
-	return b
-}

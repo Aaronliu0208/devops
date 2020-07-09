@@ -1,6 +1,8 @@
 package nginx
 
 import (
+	"bufio"
+	"bytes"
 	"fmt"
 	"strings"
 )
@@ -79,6 +81,11 @@ func (b *Block) SetDirectives(directives []Directive) {
 	}
 }
 
+//Value implements Directive
+func (b *Block) Value() interface{} {
+	return b
+}
+
 func (b *Block) String() string {
 	for _, d := range b.Directives() {
 		d.SetIndentLevel(b.GetIndentLevel() + 1)
@@ -122,4 +129,39 @@ func NewLocation(location string) *Location {
 	return &Location{
 		Block: *NewBlock("location " + location),
 	}
+}
+
+//CustomBlock custom block like init_by_lua....
+type CustomBlock struct {
+	Base
+	value string
+}
+
+//NewCustomBlock create custom block
+func NewCustomBlock(name, value string) *CustomBlock {
+	return &CustomBlock{
+		Base:  NewDefaultBase(name),
+		value: value,
+	}
+}
+
+//Value implements Directive
+func (c *CustomBlock) Value() interface{} {
+	return c.value
+}
+
+func (c *CustomBlock) String() string {
+	builder := strings.Builder{}
+	count := c.Indent * (c.IndentLevel + 1)
+	var buffer bytes.Buffer
+	for i := 0; i < count; i++ {
+		buffer.WriteByte(c.IndentChar)
+	}
+	scanner := bufio.NewScanner(strings.NewReader(c.value))
+	for scanner.Scan() {
+		builder.WriteString(buffer.String())
+		builder.WriteString(scanner.Text())
+		builder.WriteString("\n")
+	}
+	return fmt.Sprintf("\n%s%s {\n%s\n%s}", c.GetIndent(), c.name, builder.String(), c.GetIndent())
 }
