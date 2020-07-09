@@ -40,6 +40,20 @@ func (b *Block) AddDirective(d Directive) {
 	b.Options[name] = d
 }
 
+//AddDirectives add options
+func (b *Block) AddDirectives(i interface{}) {
+	directives, err := MarshalDirective(i)
+	if err == nil {
+		for _, d := range directives {
+			if d != nil {
+				name := d.Name()
+				d.SetParent(b)
+				b.Options[name] = d
+			}
+		}
+	}
+}
+
 //AddKVOption add options
 func (b *Block) AddKVOption(key string, value interface{}) {
 	d := BuildDirective(key, value)

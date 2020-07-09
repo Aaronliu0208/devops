@@ -91,3 +91,36 @@ func TestBlockRender(t *testing.T) {
 	serverblk.AddDirective(location)
 	fmt.Println(config)
 }
+
+type TestNginxConfig struct {
+	WorkerProcesses string       `kv:"worker_processes"`
+	ErrorLog        []string     `kv:"error_log,omitempty"`
+	Rlimit          int          `kv:"worker_rlimit_nofile"`
+	GzipOn          bool         `kv:"gzip"`
+	Epoll           *bool        `kv:"epoll"`
+	Servers         []TestServer `kv:"server"`
+}
+
+type TestServer struct {
+	Listen int    `kv:"listen"`
+	Domain string `kv:"server_name"`
+}
+
+func TestMarshalDirective(t *testing.T) {
+	config := NewConfig()
+	globalConfig := &TestNginxConfig{
+		WorkerProcesses: "auto",
+		Rlimit:          204800,
+		GzipOn:          true,
+		Servers: []TestServer{
+			TestServer{
+				Listen: 80,
+				Domain: "www.baidu.com",
+			},
+		},
+	}
+	http := NewBlock("http")
+	http.AddDirectives(globalConfig)
+	config.AddDirective(http)
+	fmt.Println(config)
+}
