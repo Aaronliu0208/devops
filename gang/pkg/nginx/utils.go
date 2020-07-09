@@ -17,6 +17,9 @@ func AsSha256(o interface{}) string {
 
 //CovertToString convert interface to string
 func CovertToString(value interface{}) string {
+	if value == nil {
+		return ""
+	}
 	var val string
 	v := reflect.ValueOf(value)
 	if v.Kind() == reflect.String {
@@ -46,4 +49,14 @@ func CovertToString(value interface{}) string {
 	}
 
 	return val
+}
+
+//BuildDirective build directive with name , value
+func BuildDirective(name string, value interface{}) Directive {
+	t, ok := value.(*Block)
+	if ok {
+		return (Directive)(t)
+	}
+
+	return NewKeyValueOption(name, value)
 }

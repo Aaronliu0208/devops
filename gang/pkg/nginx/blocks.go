@@ -1,23 +1,20 @@
 package nginx
 
+import (
+	"fmt"
+	"strings"
+)
+
+// Dict dictionary for key value types
+type Dict = map[string]Directive
+
 // Block A block represent a named section of an Nginx config, such as 'http', 'server' or 'location'
 //  Using this object is as simple as providing a name and any sections or options,
 // which can be other Block objects or option objects.
 type Block struct {
 	Base
-	Name     string
-	Options  AttrDict
-	Sections AttrDict
+	Options Dict
 }
-
-// Blocks list of blocks
-type Blocks = []Block
-
-// Section represet nginx config section
-type Section = Block
-
-// Sections list of blocks
-type Sections = []Block
 
 // EmptyBlock An unnamed block of options and/or sections.
 // Empty blocks are useful for representing groups of options.
@@ -29,14 +26,76 @@ type EmptyBlock struct {
 type Config = EmptyBlock
 
 //NewBlock construct of a block
-func NewBlock(name string, options Options, sections Blocks) Block {
-	block := Block{
-		Name: name,
-		Base: NewDefaultBase(),
+func NewBlock(name string) *Block {
+	block := &Block{
+		Base: NewDefaultBase(name),
 	}
 
-	block.Options = NewAttrDict(&block)
-	block.Sections = NewAttrDict(&block)
+	block.Options = make(Dict)
 
 	return block
+}
+
+//AddDirective add options
+func (b *Block) AddDirective(d Directive) {
+	name := d.Name()
+	d.SetParent(b)
+	b.Options[name] = d
+}
+
+//AddKVOption add options
+func (b *Block) AddKVOption(key string, value interface{}) {
+	d := BuildDirective(key, value)
+	b.Options[key] = d
+}
+
+//Directives get all directive for blocks
+func (b *Block) Directives() []Directive {
+	var directives []Directive
+	for _, opt := range b.Options {
+		directives = append(directives, opt)
+	}
+
+	return directives
+}
+
+// SetDirectives set all directives
+func (b *Block) SetDirectives(directives []Directive) {
+	if directives != nil {
+		for _, d := range directives {
+			b.AddDirective(d)
+		}
+	}
+}
+
+func (b *Block) String() string {
+	for _, d := range b.Directives() {
+		d.SetIndentLevel(b.GetIndentLevel() + 1)
+	}
+
+	builder := strings.Builder{}
+	for _, d := range b.Directives() {
+		builder.WriteString(d.String())
+	}
+
+	return fmt.Sprintf("\n%s%s {%s\n%s}", b.GetIndent(), b.name, builder.String(), b.GetIndent())
+}
+
+//NewEmptyBlock new empty block
+func NewEmptyBlock() *EmptyBlock {
+	return &EmptyBlock{
+		Block: *NewBlock(""),
+	}
+}
+
+// Location nginx directive
+type Location struct {
+	Block
+}
+
+//NewLocation new location
+func NewLocation(location string) *Location {
+	return &Location{
+		Block: *NewBlock("location " + location),
+	}
 }

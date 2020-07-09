@@ -5,31 +5,45 @@ import (
 	"fmt"
 )
 
-// Base nginx config base render
+// Directive nginx config directive
+type Directive interface {
+	Name() string
+	Value() interface{}
+	String() string
+	Parent() interface{}
+	SetParent(parent interface{})
+	SetIndentLevel(level int)
+	GetIndentLevel() int
+}
+
+// Base nginx config item
 type Base struct {
 	IndentLevel int
 	IndentChar  byte
 	Indent      int
-	Parent      interface{}
+	parent      interface{}
+	name        string
 }
 
 //NewDefaultBase default config base
-func NewDefaultBase() Base {
+func NewDefaultBase(name string) Base {
 	return Base{
 		IndentLevel: 0,
 		IndentChar:  ' ',
 		Indent:      4,
-		Parent:      nil,
+		parent:      nil,
+		name:        name,
 	}
 }
 
 //NewBase create new Base Object
-func NewBase(level, indent int, char byte, parent interface{}) Base {
+func NewBase(name string, level, indent int, char byte, parent interface{}) Base {
 	return Base{
 		IndentLevel: level,
 		IndentChar:  char,
 		Indent:      indent,
-		Parent:      parent,
+		parent:      parent,
+		name:        name,
 	}
 }
 
@@ -44,7 +58,37 @@ func (b Base) GetIndent() string {
 	return buffer.String()
 }
 
-//Render render object
+//Render config with intent and name
 func (b Base) Render(name string) string {
 	return fmt.Sprintf("\n%s%s", b.GetIndent(), name)
+}
+
+// SetIndentLevel implements Directive
+func (b *Base) SetIndentLevel(level int) {
+	b.IndentLevel = level
+}
+
+//GetIndentLevel implements Directive
+func (b Base) GetIndentLevel() int {
+	return b.IndentLevel
+}
+
+//Parent implements Directive Parent
+func (b Base) Parent() interface{} {
+	return b.parent
+}
+
+//SetParent implements Directive
+func (b *Base) SetParent(parent interface{}) {
+	b.parent = parent
+}
+
+// Name implements Directive Interface
+func (b Base) Name() string {
+	return b.name
+}
+
+//Value implements Directive Interface
+func (b Base) Value() interface{} {
+	return b
 }
