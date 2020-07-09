@@ -78,14 +78,16 @@ func TestKeyValueOption(t *testing.T) {
 }
 
 func TestBlockRender(t *testing.T) {
+	config := NewConfig()
 	option := NewKeyValueOption("name", "value")
 	block := NewBlock("http")
 	block.AddDirective(option)
+	config.AddDirective(block)
 	serverblk := NewBlock("server")
 	block.AddDirective(serverblk)
 	serverblk.AddKVOption("listent", "80")
 	location := NewLocation("/")
 	location.AddKVOption("return", "200")
 	serverblk.AddDirective(location)
-	fmt.Print(block)
+	fmt.Println(config)
 }

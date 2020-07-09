@@ -16,14 +16,11 @@ type Block struct {
 	Options Dict
 }
 
-// EmptyBlock An unnamed block of options and/or sections.
+// Config An unnamed block of options and/or sections.
 // Empty blocks are useful for representing groups of options.
-type EmptyBlock struct {
+type Config struct {
 	Block
 }
-
-// Config represet nginx config struct
-type Config = EmptyBlock
 
 //NewBlock construct of a block
 func NewBlock(name string) *Block {
@@ -81,11 +78,24 @@ func (b *Block) String() string {
 	return fmt.Sprintf("\n%s%s {%s\n%s}", b.GetIndent(), b.name, builder.String(), b.GetIndent())
 }
 
-//NewEmptyBlock new empty block
-func NewEmptyBlock() *EmptyBlock {
-	return &EmptyBlock{
+//NewConfig new empty block
+func NewConfig() *Config {
+	return &Config{
 		Block: *NewBlock(""),
 	}
+}
+
+func (b *Config) String() string {
+	for _, d := range b.Directives() {
+		d.SetIndentLevel(b.GetIndentLevel())
+	}
+
+	builder := strings.Builder{}
+	for _, d := range b.Directives() {
+		builder.WriteString(d.String())
+	}
+
+	return builder.String()
 }
 
 // Location nginx directive
