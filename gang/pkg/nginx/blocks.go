@@ -44,7 +44,7 @@ func (b *Block) AddDirective(d Directive) {
 
 //AddDirectives add options
 func (b *Block) AddDirectives(i interface{}) {
-	directives, err := MarshalDirective(i)
+	directives, err := Marshal(i)
 	if err == nil {
 		for _, d := range directives {
 			if d != nil {
