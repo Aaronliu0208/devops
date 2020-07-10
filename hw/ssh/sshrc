@@ -1,0 +1,9 @@
+#!/bin/bash
+LOGIN_IP=`echo $SSH_CONNECTION |cut -d " " -f 1`
+FQDN=`hostname -f`
+IPADDR=$(/usr/sbin/ifconfig eth0|awk -F '[ :]+' 'NR==2 {print $3}')
+logger -t ssh-wrapper $USER from ip $LOGIN_IP
+
+cat <<EOF | /usr/local/sbin/send_wx.py
+$USER login from $LOGIN_IP to 数据库: $FQDN($IPADDR) at $(date '+%F %H:%M:%S')
+EOF
