@@ -1,16 +1,36 @@
 package nginx
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 	"strings"
 )
 
+// Marshaler is the interface implemented by types that
+// can marshal themselves into valid Directive.
+type Marshaler interface {
+	Marshal() ([]Directive, error)
+}
+
+var marshalerType = reflect.TypeOf((*Marshaler)(nil)).Elem()
+
 //Marshal marshal struct to directives such KeyValueOption
 func Marshal(i interface{}) ([]Directive, error) {
+	//如果接口实现Marshaler则直接调用
+	iv, ok := i.(Marshaler)
+	if ok {
+		return iv.Marshal()
+	}
+
+	//is Directive return it self
+	dv, ok := i.(Directive)
+	if ok {
+		return []Directive{dv}, nil
+	}
+
 	v := getValue(reflect.ValueOf(i))
 	t := v.Type()
-
 	if t.Kind() != reflect.Struct {
 		return nil, fmt.Errorf("type %s is not supported", t.Kind())
 	}
@@ -24,11 +44,31 @@ func Marshal(i interface{}) ([]Directive, error) {
 		if f.PkgPath != "" {
 			continue
 		}
-		fv := getValue(v.Field(i))
-		if fv.IsValid() {
-
+		if f.Type.Implements(marshalerType) {
+			fv := v.Field(i)
+			if fv.IsNil() {
+				continue
+			}
+			m, _ := fv.Interface().(Marshaler)
+			ds, err := m.Marshal()
+			if err == nil {
+				for _, dd := range ds {
+					directives = append(directives, dd)
+				}
+				continue
+			}
 		}
-		key, omit := readTag(f) //omit 忽略
+
+		fv := getValue(v.Field(i))
+		if !fv.IsValid() {
+			return nil, errors.New("invalid input value")
+		}
+
+		key, omit := readTag(f) //omit 忽略, "-"忽略
+		if strings.Compare(key, "-") == 0 {
+			// ignore
+			continue
+		}
 		var d Directive
 		switch fv.Kind() {
 		case reflect.Func, reflect.Chan:
@@ -42,7 +82,7 @@ func Marshal(i interface{}) ([]Directive, error) {
 			for _, sd := range dd {
 				b.AddDirective(sd)
 			}
-			d = b
+			directives = append(directives, b)
 		case reflect.Ptr, reflect.UnsafePointer:
 			if fv.IsNil() {
 				if !omit {
@@ -53,10 +93,12 @@ func Marshal(i interface{}) ([]Directive, error) {
 			} else {
 				d = BuildDirective(key, fv.Interface())
 			}
+			directives = append(directives, d)
 		case reflect.Slice:
 			if fv.IsNil() {
 				if !omit {
 					d = BuildDirective(key, nil)
+					directives = append(directives, d)
 				} else {
 					continue
 				}
@@ -72,16 +114,22 @@ func Marshal(i interface{}) ([]Directive, error) {
 						b.AddDirective(sd)
 					}
 				}
-				d = b
+				directives = append(directives, b)
 			}
 
 		case reflect.Map:
-
+			for _, e := range fv.MapKeys() {
+				if e.Kind() != reflect.String {
+					continue
+				}
+				vv := fv.MapIndex(e)
+				d = BuildDirective(e.String(), vv.Interface())
+				directives = append(directives, d)
+			}
 		default:
 			d = BuildDirective(key, fv.Interface())
+			directives = append(directives, d)
 		}
-
-		directives = append(directives, d)
 	}
 
 	return directives, nil

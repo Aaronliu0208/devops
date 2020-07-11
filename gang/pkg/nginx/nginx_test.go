@@ -93,17 +93,28 @@ func TestBlockRender(t *testing.T) {
 }
 
 type TestNginxConfig struct {
-	WorkerProcesses string       `kv:"worker_processes"`
-	ErrorLog        []string     `kv:"error_log,omitempty"`
-	Rlimit          int          `kv:"worker_rlimit_nofile"`
-	GzipOn          bool         `kv:"gzip"`
-	Epoll           *bool        `kv:"epoll"`
-	Servers         []TestServer `kv:"server"`
+	WorkerProcesses string                 `kv:"worker_processes"`
+	ErrorLog        []string               `kv:"error_log,omitempty"`
+	Rlimit          int                    `kv:"worker_rlimit_nofile"`
+	GzipOn          bool                   `kv:"gzip"`
+	Epoll           *bool                  `kv:"epoll"`
+	Servers         []TestServer           `kv:"server"`
+	ExtConfig       map[string]interface{} `kvext:"omitempty"`
+	Marshal         *MarshalTest
 }
 
 type TestServer struct {
 	Listen int    `kv:"listen"`
 	Domain string `kv:"server_name"`
+}
+
+type MarshalTest struct {
+}
+
+func (t *MarshalTest) Marshal() ([]Directive, error) {
+	return []Directive{
+		NewKeyValueOption("marshaler", "testpass"),
+	}, nil
 }
 
 func TestMarshalDirective(t *testing.T) {
@@ -118,11 +129,50 @@ func TestMarshalDirective(t *testing.T) {
 				Domain: "www.baidu.com",
 			},
 		},
+		ExtConfig: make(map[string]interface{}),
 	}
+	globalConfig.ExtConfig["abc"] = "bcd"
+	globalConfig.ExtConfig["sendfile"] = "on"
 	http := NewBlock("http")
 	http.AddDirectives(globalConfig)
 	config.AddDirective(http)
 	customBlk := NewCustomBlock("init_by_lua", "kong.init()\nngx.say(ngx.var.arg_a)")
 	http.AddDirective(customBlk)
 	fmt.Println(config)
+}
+
+func TestMarshaler(t *testing.T) {
+	test := &MarshalTest{}
+
+	ds, err := Marshal(test)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	for _, d := range ds {
+		fmt.Println(d)
+	}
+}
+
+type TestConfig struct {
+	Foo     string `kv:"foo"`
+	Marshal *MarshalTest
+}
+
+func TestStructFieldMarshaler(t *testing.T) {
+	testConfig := &TestConfig{
+		Foo:     "test",
+		Marshal: &MarshalTest{},
+	}
+
+	ds, err := Marshal(testConfig)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	for _, d := range ds {
+		fmt.Println(d)
+	}
 }
