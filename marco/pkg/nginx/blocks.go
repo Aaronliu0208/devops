@@ -19,12 +19,6 @@ type Block struct {
 	Options Dict
 }
 
-// Config An unnamed block of options and/or sections.
-// Empty blocks are useful for representing groups of options.
-type Config struct {
-	Block
-}
-
 //NewBlock construct of a block
 func NewBlock(name string) *Block {
 	block := &Block{
@@ -101,14 +95,20 @@ func (b *Block) String() string {
 	return fmt.Sprintf("\n%s%s {%s\n%s}", b.GetIndent(), b.name, builder.String(), b.GetIndent())
 }
 
-//NewConfig new empty block
-func NewConfig() *Config {
-	return &Config{
+// EmptyBlock An unnamed block of options and/or sections.
+// Empty blocks are useful for representing groups of options.
+type EmptyBlock struct {
+	Block
+}
+
+//NewEmptyBlock new empty block
+func NewEmptyBlock() *EmptyBlock {
+	return &EmptyBlock{
 		Block: *NewBlock(""),
 	}
 }
 
-func (b *Config) String() string {
+func (b *EmptyBlock) String() string {
 	for _, d := range b.Directives() {
 		d.SetIndentLevel(b.GetIndentLevel())
 	}

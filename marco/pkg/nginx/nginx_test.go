@@ -78,7 +78,7 @@ func TestKeyValueOption(t *testing.T) {
 }
 
 func TestBlockRender(t *testing.T) {
-	config := NewConfig()
+	config := NewEmptyBlock()
 	option := NewKeyValueOption("name", "value")
 	block := NewBlock("http")
 	block.AddDirective(option)
@@ -118,7 +118,7 @@ func (t *MarshalTest) Marshal() ([]Directive, error) {
 }
 
 func TestMarshalDirective(t *testing.T) {
-	config := NewConfig()
+	config := NewEmptyBlock()
 	globalConfig := &TestNginxConfig{
 		WorkerProcesses: "auto",
 		Rlimit:          204800,
