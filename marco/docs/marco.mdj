@@ -1,7 +1,7 @@
 {
 	"_type": "Project",
 	"_id": "AAAAAAFF+h6SjaM2Hec=",
-	"name": "gong",
+	"name": "Marco",
 	"ownedElements": [
 		{
 			"_type": "UMLModel",
@@ -2663,7 +2663,7 @@
 			"_parent": {
 				"$ref": "AAAAAAFF+h6SjaM2Hec="
 			},
-			"name": "gong",
+			"name": "marco",
 			"ownedElements": [
 				{
 					"_type": "UMLClassDiagram",
@@ -2671,7 +2671,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFzMr0uIWBmO74="
 					},
-					"name": "gongClassDiagram",
+					"name": "MarcoClassDiagram",
 					"ownedViews": [
 						{
 							"_type": "UMLClassView",
@@ -2726,9 +2726,9 @@
 											"visible": false,
 											"font": "Arial;13;0",
 											"top": 128,
-											"width": 71.56495666503906,
+											"width": 78.71728515625,
 											"height": 13,
-											"text": "(from gong)"
+											"text": "(from marco)"
 										},
 										{
 											"_type": "LabelView",
@@ -2899,9 +2899,9 @@
 											"font": "Arial;13;0",
 											"left": -288,
 											"top": -608,
-											"width": 71.56495666503906,
+											"width": 78.71728515625,
 											"height": 13,
-											"text": "(from gong)"
+											"text": "(from marco)"
 										},
 										{
 											"_type": "LabelView",
@@ -3128,9 +3128,9 @@
 											"font": "Arial;13;0",
 											"left": -208,
 											"top": -752,
-											"width": 71.56495666503906,
+											"width": 78.71728515625,
 											"height": 13,
-											"text": "(from gong)"
+											"text": "(from marco)"
 										},
 										{
 											"_type": "LabelView",
@@ -3304,9 +3304,9 @@
 											"font": "Arial;13;0",
 											"left": -96,
 											"top": -80,
-											"width": 71.56495666503906,
+											"width": 78.71728515625,
 											"height": 13,
-											"text": "(from gong)"
+											"text": "(from marco)"
 										},
 										{
 											"_type": "LabelView",
@@ -3480,9 +3480,9 @@
 											"font": "Arial;13;0",
 											"left": -368,
 											"top": -544,
-											"width": 71.56495666503906,
+											"width": 78.71728515625,
 											"height": 13,
-											"text": "(from gong)"
+											"text": "(from marco)"
 										},
 										{
 											"_type": "LabelView",
@@ -3656,9 +3656,9 @@
 											"font": "Arial;13;0",
 											"left": 672,
 											"top": -336,
-											"width": 71.56495666503906,
+											"width": 78.71728515625,
 											"height": 13,
-											"text": "(from gong)"
+											"text": "(from marco)"
 										},
 										{
 											"_type": "LabelView",
@@ -3919,9 +3919,9 @@
 											"font": "Arial;13;0",
 											"left": -112,
 											"top": -112,
-											"width": 67.18994140625,
+											"width": 78.71728515625,
 											"height": 13,
-											"text": "(from gong)"
+											"text": "(from marco)"
 										},
 										{
 											"_type": "LabelView",
@@ -4165,9 +4165,9 @@
 											"font": "Arial;13;0",
 											"left": -16,
 											"top": -80,
-											"width": 67.18994140625,
+											"width": 78.71728515625,
 											"height": 13,
-											"text": "(from gong)"
+											"text": "(from marco)"
 										},
 										{
 											"_type": "LabelView",
@@ -4347,7 +4347,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFzMr0uIWBmO74="
 					},
-					"name": "Gong"
+					"name": "Marco"
 				},
 				{
 					"_type": "UMLClass",
@@ -4444,10 +4444,10 @@
 											"font": "Arial;13;1",
 											"left": 333,
 											"top": 183,
-											"width": 93.87554931640625,
+											"width": 98.22998046875,
 											"height": 13,
 											"underline": true,
-											"text": "应用实例: Gong"
+											"text": "应用实例: Marco"
 										},
 										{
 											"_type": "LabelView",
@@ -4459,9 +4459,9 @@
 											"font": "Arial;13;0",
 											"left": 80,
 											"top": -48,
-											"width": 71.56495666503906,
+											"width": 74.38818359375,
 											"height": 13,
-											"text": "(from gong)"
+											"text": "(from marco)"
 										},
 										{
 											"_type": "LabelView",
@@ -4480,7 +4480,7 @@
 									"font": "Arial;13;0",
 									"left": 328,
 									"top": 176,
-									"width": 103.87554931640625,
+									"width": 108.22998046875,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAFzMsGl9mELt+M="
@@ -4516,7 +4516,7 @@
 							"containerChangeable": true,
 							"left": 328,
 							"top": 176,
-							"width": 103.87554931640625,
+							"width": 108.22998046875,
 							"height": 25,
 							"nameCompartment": {
 								"$ref": "AAAAAAFzMsGl9mEK7WU="
@@ -4581,9 +4581,9 @@
 											"font": "Arial;13;0",
 											"left": -64,
 											"top": -256,
-											"width": 71.56495666503906,
+											"width": 74.38818359375,
 											"height": 13,
-											"text": "(from gong)"
+											"text": "(from marco)"
 										},
 										{
 											"_type": "LabelView",
@@ -4703,9 +4703,9 @@
 											"font": "Arial;13;0",
 											"left": -32,
 											"top": -16,
-											"width": 71.56495666503906,
+											"width": 74.38818359375,
 											"height": 13,
-											"text": "(from gong)"
+											"text": "(from marco)"
 										},
 										{
 											"_type": "LabelView",
@@ -4825,9 +4825,9 @@
 											"font": "Arial;13;0",
 											"left": -272,
 											"top": 144,
-											"width": 71.56495666503906,
+											"width": 74.38818359375,
 											"height": 13,
-											"text": "(from gong)"
+											"text": "(from marco)"
 										},
 										{
 											"_type": "LabelView",
@@ -5147,8 +5147,8 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 321,
-									"top": 215,
+									"left": 322,
+									"top": 214,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 15,
@@ -5168,8 +5168,8 @@
 									},
 									"visible": null,
 									"font": "Arial;13;0",
-									"left": 311,
-									"top": 204,
+									"left": 312,
+									"top": 203,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 30,
@@ -5189,8 +5189,8 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 342,
-									"top": 236,
+									"left": 343,
+									"top": 237,
 									"height": 13,
 									"alpha": -1.5707963267948966,
 									"distance": 15,
@@ -5210,7 +5210,7 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 307,
+									"left": 308,
 									"top": 228,
 									"height": 13,
 									"alpha": 0.5235987755982988,
@@ -5273,7 +5273,7 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 335,
+									"left": 337,
 									"top": 201,
 									"height": 13,
 									"alpha": -0.5235987755982988,
@@ -5293,7 +5293,7 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 325,
+									"left": 327,
 									"top": 193,
 									"height": 13,
 									"alpha": -0.7853981633974483,
@@ -5313,7 +5313,7 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 357,
+									"left": 359,
 									"top": 218,
 									"height": 13,
 									"alpha": 0.5235987755982988,
@@ -5331,7 +5331,7 @@
 								"$ref": "AAAAAAFzMsICv2EpmTk="
 							},
 							"lineStyle": 1,
-							"points": "299:263;365:201",
+							"points": "299:263;367:201",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAFzMsOXx2Mm0sQ="
@@ -5417,9 +5417,9 @@
 											"font": "Arial;13;0",
 											"left": -272,
 											"top": -16,
-											"width": 71.56495666503906,
+											"width": 74.38818359375,
 											"height": 13,
-											"text": "(from gong)"
+											"text": "(from marco)"
 										},
 										{
 											"_type": "LabelView",
@@ -5539,9 +5539,9 @@
 											"font": "Arial;13;0",
 											"left": -112,
 											"top": -32,
-											"width": 71.56495666503906,
+											"width": 74.38818359375,
 											"height": 13,
-											"text": "(from gong)"
+											"text": "(from marco)"
 										},
 										{
 											"_type": "LabelView",
@@ -5661,9 +5661,9 @@
 											"font": "Arial;13;0",
 											"left": -160,
 											"top": -32,
-											"width": 71.56495666503906,
+											"width": 74.38818359375,
 											"height": 13,
-											"text": "(from gong)"
+											"text": "(from marco)"
 										},
 										{
 											"_type": "LabelView",
@@ -5783,9 +5783,9 @@
 											"font": "Arial;13;0",
 											"left": 96,
 											"top": 288,
-											"width": 71.56495666503906,
+											"width": 74.38818359375,
 											"height": 13,
-											"text": "(from gong)"
+											"text": "(from marco)"
 										},
 										{
 											"_type": "LabelView",
@@ -6105,8 +6105,8 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 373,
-									"top": 225,
+									"left": 374,
+									"top": 224,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 15,
@@ -6126,8 +6126,8 @@
 									},
 									"visible": null,
 									"font": "Arial;13;0",
-									"left": 358,
-									"top": 228,
+									"left": 359,
+									"top": 227,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 30,
@@ -6147,8 +6147,8 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 402,
-									"top": 218,
+									"left": 403,
+									"top": 219,
 									"height": 13,
 									"alpha": -1.5707963267948966,
 									"distance": 15,
@@ -6168,7 +6168,7 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 373,
+									"left": 374,
 									"top": 226,
 									"height": 13,
 									"alpha": 0.5235987755982988,
@@ -6189,8 +6189,8 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 360,
-									"top": 227,
+									"left": 361,
+									"top": 226,
 									"height": 13,
 									"alpha": 0.7853981633974483,
 									"distance": 40,
@@ -6210,7 +6210,7 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 401,
+									"left": 402,
 									"top": 225,
 									"height": 13,
 									"alpha": -0.5235987755982988,
@@ -6231,7 +6231,7 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 372,
+									"left": 373,
 									"top": 223,
 									"height": 13,
 									"alpha": -0.5235987755982988,
@@ -6251,8 +6251,8 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 360,
-									"top": 228,
+									"left": 361,
+									"top": 227,
 									"height": 13,
 									"alpha": -0.7853981633974483,
 									"distance": 40,
@@ -6271,8 +6271,8 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 398,
-									"top": 213,
+									"left": 400,
+									"top": 214,
 									"height": 13,
 									"alpha": 0.5235987755982988,
 									"distance": 25,
@@ -6289,7 +6289,7 @@
 								"$ref": "AAAAAAFzMsRXuGYRJ38="
 							},
 							"lineStyle": 1,
-							"points": "394:255;382:201",
+							"points": "394:255;384:201",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAFzMsTwHmhhvH0="
@@ -6610,9 +6610,9 @@
 											"font": "Arial;13;0",
 											"left": 32,
 											"top": -16,
-											"width": 71.56495666503906,
+											"width": 74.38818359375,
 											"height": 13,
-											"text": "(from gong)"
+											"text": "(from marco)"
 										},
 										{
 											"_type": "LabelView",
@@ -6687,7 +6687,7 @@
 							"top": 168,
 							"width": 130.16197204589844,
 							"height": 40,
-							"text": "Gong 负责管理nginx实例"
+							"text": "Marco 负责管理nginx实例"
 						},
 						{
 							"_type": "UMLNoteView",
@@ -6710,9 +6710,7 @@
 						"$ref": "AAAAAAFzMr0uIWBmO74="
 					},
 					"name": "应用实例",
-					"classifier": {
-						"$ref": "AAAAAAFzMr34WmBuOyc="
-					}
+					"classifier": "Marco"
 				},
 				{
 					"_type": "UMLObject",
@@ -7055,7 +7053,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFzMr0uIWBmO74="
 					},
-					"name": "GongConfig",
+					"name": "Config",
 					"attributes": [
 						{
 							"_type": "UMLAttribute",
