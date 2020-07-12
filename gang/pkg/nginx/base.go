@@ -3,6 +3,7 @@ package nginx
 import (
 	"bytes"
 	"fmt"
+	"strings"
 )
 
 // Directive nginx config directive
@@ -14,6 +15,29 @@ type Directive interface {
 	SetParent(parent interface{})
 	SetIndentLevel(level int)
 	GetIndentLevel() int
+}
+
+// Directives slice of directive
+// usage:
+// sort.Sort(Directives(sliceOfDirective))
+type Directives []Directive
+
+// Len implements sort.Interface
+func (d Directives) Len() int { return len(d) }
+
+// Less implments sort.Interface
+func (d Directives) Less(i, j int) bool {
+	siLower := strings.ToLower(d[i].Name())
+	sjLower := strings.ToLower(d[j].Name())
+	if siLower == sjLower {
+		return d[i].Name() < d[j].Name()
+	}
+	return siLower < sjLower
+}
+
+// Swap implements sort.Interface
+func (d Directives) Swap(i, j int) {
+	d[i], d[j] = d[j], d[i]
 }
 
 // Base nginx config item

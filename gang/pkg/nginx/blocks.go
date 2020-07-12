@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"sort"
 	"strings"
 )
 
@@ -90,9 +91,10 @@ func (b *Block) String() string {
 	for _, d := range b.Directives() {
 		d.SetIndentLevel(b.GetIndentLevel() + 1)
 	}
-
+	ds := Directives(b.Directives())
+	sort.Sort(ds)
 	builder := strings.Builder{}
-	for _, d := range b.Directives() {
+	for _, d := range ds {
 		builder.WriteString(d.String())
 	}
 
@@ -110,9 +112,10 @@ func (b *Config) String() string {
 	for _, d := range b.Directives() {
 		d.SetIndentLevel(b.GetIndentLevel())
 	}
-
+	ds := Directives(b.Directives())
+	sort.Sort(ds)
 	builder := strings.Builder{}
-	for _, d := range b.Directives() {
+	for _, d := range ds {
 		builder.WriteString(d.String())
 	}
 
