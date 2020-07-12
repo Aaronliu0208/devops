@@ -8,15 +8,12 @@ import (
 	"strings"
 )
 
-// Dict dictionary for key value types
-type Dict = map[string]Directive
-
 // Block A block represent a named section of an Nginx config, such as 'http', 'server' or 'location'
 //  Using this object is as simple as providing a name and any sections or options,
 // which can be other Block objects or option objects.
 type Block struct {
 	Base
-	Options Dict
+	Options Directives
 }
 
 //NewBlock construct of a block
@@ -25,16 +22,15 @@ func NewBlock(name string) *Block {
 		Base: NewDefaultBase(name),
 	}
 
-	block.Options = make(Dict)
+	block.Options = Directives{}
 
 	return block
 }
 
 //AddDirective add options
 func (b *Block) AddDirective(d Directive) {
-	name := d.Name()
 	d.SetParent(b)
-	b.Options[name] = d
+	b.Options = append(b.Options, d)
 }
 
 //AddDirectives add options
@@ -43,9 +39,8 @@ func (b *Block) AddDirectives(i interface{}) {
 	if err == nil {
 		for _, d := range directives {
 			if d != nil {
-				name := d.Name()
 				d.SetParent(b)
-				b.Options[name] = d
+				b.Options = append(b.Options, d)
 			}
 		}
 	}
@@ -54,17 +49,7 @@ func (b *Block) AddDirectives(i interface{}) {
 //AddKVOption add options
 func (b *Block) AddKVOption(key string, value interface{}) {
 	d := BuildDirective(key, value)
-	b.Options[key] = d
-}
-
-//Directives get all directive for blocks
-func (b *Block) Directives() []Directive {
-	var directives []Directive
-	for _, opt := range b.Options {
-		directives = append(directives, opt)
-	}
-
-	return directives
+	b.Options = append(b.Options, d)
 }
 
 // SetDirectives set all directives
@@ -82,13 +67,12 @@ func (b *Block) Value() interface{} {
 }
 
 func (b *Block) String() string {
-	for _, d := range b.Directives() {
+	for _, d := range b.Options {
 		d.SetIndentLevel(b.GetIndentLevel() + 1)
 	}
-	ds := Directives(b.Directives())
-	sort.Sort(ds)
+	sort.Sort(b.Options)
 	builder := strings.Builder{}
-	for _, d := range ds {
+	for _, d := range b.Options {
 		builder.WriteString(d.String())
 	}
 
@@ -109,10 +93,10 @@ func NewEmptyBlock() *EmptyBlock {
 }
 
 func (b *EmptyBlock) String() string {
-	for _, d := range b.Directives() {
+	for _, d := range b.Options {
 		d.SetIndentLevel(b.GetIndentLevel())
 	}
-	ds := Directives(b.Directives())
+	ds := Directives(b.Options)
 	sort.Sort(ds)
 	builder := strings.Builder{}
 	for _, d := range ds {

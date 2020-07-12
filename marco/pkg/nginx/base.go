@@ -22,6 +22,9 @@ type Directive interface {
 // sort.Sort(Directives(sliceOfDirective))
 type Directives []Directive
 
+// KVDirect represent ngin key value directive
+type KVDirect = map[string]interface{}
+
 // Len implements sort.Interface
 func (d Directives) Len() int { return len(d) }
 
