@@ -7,28 +7,14 @@ type Events struct {
 	MultiAccept       bool   `kv:"multi_accept"` //default on
 }
 
-//MimeTypes for nginx config
-type MimeTypes struct {
-	Types KVDirect
-}
-
-var (
-	defaultProxyConfig = KVDirect{
-		// "proxy_redirect":          "off",
-		// "proxy_set_header":        "Host $host",
-		// "proxy_set_header":        "X-Real-IP $remote_addr",
-		// "proxy_set_header":        "X-Forwarded-For $proxy_add_x_forwarded_for",
-		// "client_max_body_size":    "10m",
-		// "client_body_buffer_size": "128k",
-		// "proxy_connect_timeout":   "90",
-		// "proxy_send_timeout":      "90",
-		// "proxy_read_timeout":      "90",
-		// "proxy_buffers":           "32 4k",
-	}
-)
-
 //HTTP nginx http config section
 type HTTP struct {
+	DefalutType string  `kv:"default_type,omitempty"`
+	LogFormat   string  `kv:"log_format"`
+	MimeTypes   Options `kv:"types"`
+	AccessLog   string  `kv:"access_log,omitempty"`
+	SendFile    bool    `kv:"sendfile"`
+	ExtConfig   Options
 }
 
 //Config represent nginx config
@@ -39,5 +25,7 @@ type Config struct {
 	PId             string `kv:"pid"`
 	ErrorLog        string `kv:"error_log,omitempty"`
 	LimitNofile     int    `kv:"worker_rlimit_nofile"`
-	ExtConfig       map[string]interface{}
+	Events          Events `kv:"events"`
+	HTTP            HTTP   `kv:"http"`
+	Extras          Options
 }

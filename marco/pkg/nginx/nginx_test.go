@@ -56,22 +56,22 @@ func TestHash(t *testing.T) {
 func TestKeyValueOption(t *testing.T) {
 	name := "shanyou"
 	value := "abc"
-	k := NewKeyValueOption(name, value)
+	k := NewKVOption(name, value)
 	assert.Equal(t, k.Value(), "abc")
 
-	k = NewKeyValueOption(name, &value)
+	k = NewKVOption(name, &value)
 	assert.Equal(t, k.Value(), "abc")
 
-	k = NewKeyValueOption(name, false)
+	k = NewKVOption(name, false)
 	assert.Equal(t, k.Value(), "off")
 
-	k = NewKeyValueOption(name, 5)
+	k = NewKVOption(name, 5)
 	assert.Equal(t, k.Value(), "5")
 
-	k = NewKeyValueOption(name, 0.5)
+	k = NewKVOption(name, 0.5)
 	assert.Equal(t, k.Value(), "0.5")
 
-	k = NewKeyValueOption(name, []string{"a", "b", "c"})
+	k = NewKVOption(name, []string{"a", "b", "c"})
 	assert.Equal(t, k.Value(), "a b c")
 
 	assert.Equal(t, k.String(), "\nshanyou a b c;")
@@ -79,7 +79,7 @@ func TestKeyValueOption(t *testing.T) {
 
 func TestBlockRender(t *testing.T) {
 	config := NewEmptyBlock()
-	option := NewKeyValueOption("name", "value")
+	option := NewKVOption("name", "value")
 	block := NewBlock("http")
 	block.AddDirective(option)
 	config.AddDirective(block)
@@ -113,7 +113,7 @@ type MarshalTest struct {
 
 func (t *MarshalTest) Marshal() ([]Directive, error) {
 	return []Directive{
-		NewKeyValueOption("marshaler", "testpass"),
+		NewKVOption("marshaler", "testpass"),
 	}, nil
 }
 
@@ -134,7 +134,7 @@ func TestMarshalDirective(t *testing.T) {
 	globalConfig.ExtConfig["abc"] = "bcd"
 	globalConfig.ExtConfig["sendfile"] = "on"
 	http := NewBlock("http")
-	http.AddDirectives(globalConfig)
+	http.AddInterface(globalConfig)
 	config.AddDirective(http)
 	customBlk := NewCustomBlock("init_by_lua", "kong.init()\nngx.say(ngx.var.arg_a)")
 	http.AddDirective(customBlk)

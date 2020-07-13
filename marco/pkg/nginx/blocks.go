@@ -32,8 +32,8 @@ func (b *Block) AddDirective(d Directive) {
 	b.Options = append(b.Options, d)
 }
 
-//AddDirectives add options
-func (b *Block) AddDirectives(i interface{}) {
+//AddInterface add options
+func (b *Block) AddInterface(i interface{}) {
 	directives, err := Marshal(i)
 	if err == nil {
 		for _, d := range directives {
@@ -51,8 +51,8 @@ func (b *Block) AddKVOption(key string, value interface{}) {
 	b.Options = append(b.Options, d)
 }
 
-// SetDirectives set all directives
-func (b *Block) SetDirectives(directives []Directive) {
+// AddDirectives addall directives
+func (b *Block) AddDirectives(directives []Directive) {
 	if directives != nil {
 		for _, d := range directives {
 			b.AddDirective(d)

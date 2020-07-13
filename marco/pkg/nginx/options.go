@@ -16,8 +16,8 @@ type KeyValueOption struct {
 	value string
 }
 
-//NewKeyValueOption init keyvalue option with key and give value
-func NewKeyValueOption(name string, value interface{}) *KeyValueOption {
+//NewKVOption init keyvalue option with key and give value
+func NewKVOption(name string, value interface{}) *KeyValueOption {
 	return &KeyValueOption{
 		Base:  NewDefaultBase(name),
 		value: CovertToString(value),

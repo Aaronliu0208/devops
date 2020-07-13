@@ -22,9 +22,6 @@ type Directive interface {
 // sort.Sort(Directives(sliceOfDirective))
 type Directives []Directive
 
-// KVDirect represent ngin key value directive
-type KVDirect = map[string]interface{}
-
 // Len implements sort.Interface
 func (d Directives) Len() int { return len(d) }
 
@@ -40,6 +37,40 @@ func (d Directives) Less(i, j int) bool {
 
 // Swap implements sort.Interface
 func (d Directives) Swap(i, j int) {
+	d[i], d[j] = d[j], d[i]
+}
+
+//Pair key value pair
+type Pair struct {
+	Key   string
+	Value interface{}
+}
+
+//Marshal implments Marshaler
+func (p Pair) Marshal() ([]Directive, error) {
+	return []Directive{
+		NewKVOption(p.Key, p.Value),
+	}, nil
+}
+
+//Options custom options
+type Options []Pair
+
+// Len implements sort.Interface
+func (d Options) Len() int { return len(d) }
+
+// Less implments sort.Interface
+func (d Options) Less(i, j int) bool {
+	siLower := strings.ToLower(d[i].Key)
+	sjLower := strings.ToLower(d[j].Key)
+	if siLower == sjLower {
+		return d[i].Key < d[j].Key
+	}
+	return siLower < sjLower
+}
+
+// Swap implements sort.Interface
+func (d Options) Swap(i, j int) {
 	d[i], d[j] = d[j], d[i]
 }
 

@@ -58,5 +58,23 @@ func BuildDirective(name string, value interface{}) Directive {
 		return (Directive)(t)
 	}
 
-	return NewKeyValueOption(name, value)
+	return NewKVOption(name, value)
+}
+
+//MergeOptions merge two options
+func MergeOptions(s1, s2 Options) Options {
+	for _, v := range s2 {
+		s1 = append(s1, v)
+	}
+
+	return s1
+}
+
+//MergeDirectives merge two directives
+func MergeDirectives(d1, d2 Directives) Directives {
+	for _, d := range d2 {
+		d1 = append(d1, d)
+	}
+
+	return d1
 }

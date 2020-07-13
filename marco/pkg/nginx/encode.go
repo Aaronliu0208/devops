@@ -65,7 +65,7 @@ func Marshal(i interface{}) ([]Directive, error) {
 			return nil, errors.New("invalid input value")
 		}
 
-		key, omit := readTag(f) //omit 忽略, "-"忽略
+		key, omit, findTag := readTag(f) //omit 忽略, "-"忽略
 		if strings.Compare(key, "-") == 0 {
 			// ignore
 			continue
@@ -104,28 +104,54 @@ func Marshal(i interface{}) ([]Directive, error) {
 					continue
 				}
 			} else {
-				b := NewBlock(key)
-				for i := 0; i < fv.Len(); i++ {
-					ifv := fv.Index(i)
-					dd, err := Marshal(ifv.Interface())
-					if err != nil {
-						continue
+				if findTag {
+					b := NewBlock(key)
+					for i := 0; i < fv.Len(); i++ {
+						ifv := fv.Index(i)
+						dd, err := Marshal(ifv.Interface())
+						if err != nil {
+							continue
+						}
+						for _, sd := range dd {
+							b.AddDirective(sd)
+						}
 					}
-					for _, sd := range dd {
-						b.AddDirective(sd)
+					directives = append(directives, b)
+				} else {
+					for i := 0; i < fv.Len(); i++ {
+						ifv := fv.Index(i)
+						dd, err := Marshal(ifv.Interface())
+						if err != nil {
+							continue
+						}
+						for _, sd := range dd {
+							directives = append(directives, sd)
+						}
 					}
 				}
-				directives = append(directives, b)
 			}
-
 		case reflect.Map:
+			var blk *Block
+			if findTag {
+				blk = NewBlock(key)
+			}
 			for _, e := range fv.MapKeys() {
 				if e.Kind() != reflect.String {
 					continue
 				}
 				vv := fv.MapIndex(e)
 				d = BuildDirective(e.String(), vv.Interface())
-				directives = append(directives, d)
+				if !findTag {
+					// 如果没有标记则直接加入到当前struct的解析结果中
+					directives = append(directives, d)
+				} else {
+					// 如果有标记则创建一个block加入到block中
+					blk.AddDirective(d)
+				}
+			}
+
+			if findTag {
+				directives = append(directives, blk)
 			}
 		default:
 			d = BuildDirective(key, fv.Interface())
@@ -154,15 +180,16 @@ func getValue(value reflect.Value) reflect.Value {
 }
 
 // read tag like `kv:"email,omitempty"`
-func readTag(f reflect.StructField) (string, bool) {
+// if no tag last key return false
+func readTag(f reflect.StructField) (string, bool, bool) {
 	val, ok := f.Tag.Lookup("kv")
 	if !ok {
-		return f.Name, false
+		return f.Name, true, false
 	}
 	opts := strings.Split(val, ",")
 	omit := false
 	if len(opts) == 2 {
 		omit = opts[1] == "omitempty"
 	}
-	return opts[0], omit
+	return opts[0], omit, true
 }
