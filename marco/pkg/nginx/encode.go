@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+	"sort"
 	"strings"
 )
 
@@ -132,6 +133,7 @@ func Marshal(i interface{}) ([]Directive, error) {
 		}
 	}
 
+	sort.Sort(Directives(directives))
 	return directives, nil
 }
 
