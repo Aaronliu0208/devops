@@ -3,6 +3,7 @@ package logger
 
 import (
 	"context"
+	"io"
 	"os"
 	"runtime"
 	"strconv"
@@ -11,16 +12,35 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-var hostName = os.Getenv("HOSTNAME")
-
 //Option log option
 type Option struct {
 	HostName string
 	WithFunc bool
 }
 
+// SetLevel 设定日志级别
+func SetLevel(level int) {
+	logrus.SetLevel(logrus.Level(level))
+}
+
+// SetFormatter 设定日志输出格式
+func SetFormatter(format string) {
+	switch format {
+	case "json":
+		logrus.SetFormatter(new(logrus.JSONFormatter))
+	default:
+		logrus.SetFormatter(new(logrus.TextFormatter))
+	}
+}
+
+// SetOutput 设定日志输出
+func SetOutput(out io.Writer) {
+	logrus.SetOutput(out)
+}
+
 // Get logger by name and option
 func Get(name string, option *Option) *Logger {
+	hostName, _ := os.Hostname()
 	opt := Option{
 		HostName: hostName,
 		WithFunc: true,
