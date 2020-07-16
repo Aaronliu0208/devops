@@ -18,7 +18,7 @@ func TestRestyInstaller(t *testing.T) {
 		os.RemoveAll(path + "/output")
 	}()
 	installer := &RestyInstaller{
-		WorkDir:      path + "/test",
+		BuildDir:     path + "/test",
 		Prefix:       path + "/output",
 		BuildOptions: []string{"--with-http_mp4_module"},
 	}

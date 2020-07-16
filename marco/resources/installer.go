@@ -20,7 +20,7 @@ var log = logger.Get("RestyInstaller", nil)
 
 //RestyInstaller install resty on disk
 type RestyInstaller struct {
-	WorkDir      string
+	BuildDir     string
 	Prefix       string
 	BuildOptions []string
 }
@@ -33,7 +33,7 @@ func (r *RestyInstaller) Install(ctx context.Context) error {
 		return err
 	}
 	//chmod
-	configurePath := filepath.Join(r.WorkDir, "configure")
+	configurePath := filepath.Join(r.BuildDir, "configure")
 	if _, err := os.Stat(configurePath); os.IsNotExist(err) {
 		return err
 	}
@@ -42,7 +42,7 @@ func (r *RestyInstaller) Install(ctx context.Context) error {
 		return err
 	}
 	//run config
-	tmpfile, err := ioutil.TempFile(r.WorkDir, "*.out")
+	tmpfile, err := ioutil.TempFile(r.BuildDir, "*.out")
 	if err != nil {
 		return err
 	}
@@ -69,7 +69,7 @@ func (r *RestyInstaller) Install(ctx context.Context) error {
 	cmd := exec.CommandContext(ctx, "/bin/bash", "-c", builder.String())
 	cmd.Stderr = mwriter
 	cmd.Stdout = mwriter
-	cmd.Dir = r.WorkDir
+	cmd.Dir = r.BuildDir
 	err = cmd.Start()
 	if err != nil {
 		return err
@@ -80,7 +80,7 @@ func (r *RestyInstaller) Install(ctx context.Context) error {
 	}
 
 	// change install file mode
-	installPath := r.WorkDir + "/build/install"
+	installPath := r.BuildDir + "/build/install"
 	if _, err := os.Stat(installPath); os.IsNotExist(err) {
 		return err
 	}
@@ -92,7 +92,7 @@ func (r *RestyInstaller) Install(ctx context.Context) error {
 	cmd = exec.CommandContext(ctx, "/bin/bash", "-c", "make && make install")
 	cmd.Stderr = mwriter
 	cmd.Stdout = mwriter
-	cmd.Dir = r.WorkDir
+	cmd.Dir = r.BuildDir
 	err = cmd.Start()
 	if err != nil {
 		return err
@@ -129,7 +129,7 @@ func (r *RestyInstaller) Extract() error {
 		}
 
 		name := strings.Replace(header.Name, parentDir, "", -1)
-		path := filepath.Join(r.WorkDir, name)
+		path := filepath.Join(r.BuildDir, name)
 		switch header.Typeflag {
 		case tar.TypeDir:
 			if err := os.Mkdir(path, 0755); err != nil {
