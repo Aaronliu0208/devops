@@ -1,6 +1,7 @@
 package resources
 
 import (
+	"context"
 	"io"
 	"os"
 	"os/exec"
@@ -12,18 +13,26 @@ func TestRestyInstaller(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	defer func() {
+		os.RemoveAll(path + "/test")
+		os.RemoveAll(path + "/output")
+	}()
 	installer := &RestyInstaller{
-		WorkDir: path + "/test",
+		WorkDir:      path + "/test",
+		Prefix:       path + "/output",
+		BuildOptions: []string{"--with-http_mp4_module"},
 	}
-
-	err = installer.Extract()
+	ctx := context.Background()
+	err = installer.Install(ctx)
 	if err != nil {
 		t.Fatal(err)
 	}
-	os.RemoveAll(path + "/test")
 }
 
 func TestMultiStdout(t *testing.T) {
+	defer func() {
+		os.RemoveAll("log.log")
+	}()
 	// Logging capability
 	f, err := os.OpenFile("log.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {

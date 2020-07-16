@@ -7,10 +7,16 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
+
+	"casicloud.com/ylops/marco/pkg/logger"
 )
+
+var log = logger.Get("RestyInstaller", nil)
 
 //RestyInstaller install resty on disk
 type RestyInstaller struct {
@@ -22,9 +28,79 @@ type RestyInstaller struct {
 // Install openresty
 func (r *RestyInstaller) Install(ctx context.Context) error {
 	//解压
+	err := r.Extract()
+	if err != nil {
+		return err
+	}
 	//chmod
+	configurePath := filepath.Join(r.WorkDir, "configure")
+	if _, err := os.Stat(configurePath); os.IsNotExist(err) {
+		return err
+	}
+	err = os.Chmod(configurePath, 0755)
+	if err != nil {
+		return err
+	}
 	//run config
+	tmpfile, err := ioutil.TempFile(r.WorkDir, "*.out")
+	if err != nil {
+		return err
+	}
+	mwriter := io.MultiWriter(tmpfile, os.Stdout)
+	/*
+			./configure --prefix=${RESTY_PREFIX} \
+		  --with-pcre-jit \
+		  --with-cc-opt="-I/usr/local/include" \
+		  --with-ld-opt="-L/usr/local/lib" \
+		  --with-http_stub_status_module \
+		  --with-http_mp4_module \
+	*/
+	builder := strings.Builder{}
+	builder.WriteString("./configure ")
+	builder.WriteString(fmt.Sprintf("--prefix=%s ", r.Prefix))
+	builder.WriteString("--with-pcre-jit ")
+	builder.WriteString("--with-cc-opt=\"-I/usr/local/include\" ")
+	builder.WriteString("--with-ld-opt=\"-L/usr/local/lib\" ")
+	builder.WriteString("--with-http_stub_status_module ")
+	for _, v := range r.BuildOptions {
+		builder.WriteString(v)
+		builder.WriteString(" ")
+	}
+	cmd := exec.CommandContext(ctx, "/bin/bash", "-c", builder.String())
+	cmd.Stderr = mwriter
+	cmd.Stdout = mwriter
+	cmd.Dir = r.WorkDir
+	err = cmd.Start()
+	if err != nil {
+		return err
+	}
+	err = cmd.Wait()
+	if err != nil {
+		return err
+	}
+
+	// change install file mode
+	installPath := r.WorkDir + "/build/install"
+	if _, err := os.Stat(installPath); os.IsNotExist(err) {
+		return err
+	}
+	err = os.Chmod(installPath, 0755)
+	if err != nil {
+		return err
+	}
 	// make and make install
+	cmd = exec.CommandContext(ctx, "/bin/bash", "-c", "make && make install")
+	cmd.Stderr = mwriter
+	cmd.Stdout = mwriter
+	cmd.Dir = r.WorkDir
+	err = cmd.Start()
+	if err != nil {
+		return err
+	}
+	err = cmd.Wait()
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
