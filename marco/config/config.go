@@ -26,6 +26,16 @@ type Config struct {
 	Git       Git    `mapstructure:"git,omitempty"`
 }
 
+//GetBuildDir get build dir
+func (c Config) GetBuildDir() string {
+	return filepath.Join(c.Workspace, "build")
+}
+
+//GetPrefix get resty prefix
+func (c Config) GetPrefix() string {
+	return filepath.Join(c.Workspace, "app")
+}
+
 // HTTP config for http server
 type HTTP struct {
 	Host            string `mapstructure:"host,omitempty"`
