@@ -8,4 +8,4 @@ http:
 log:
   level: debug
   output: file
-  file: marco.log
+  file: /home/shanyou/src/ops/ylops/marco/bin/logs/marco.log

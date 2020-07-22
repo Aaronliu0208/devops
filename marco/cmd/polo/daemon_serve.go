@@ -1,9 +1,11 @@
 package main
 
 import (
+	"context"
 	"fmt"
 
 	"casicloud.com/ylops/marco/config"
+	"casicloud.com/ylops/marco/daemon"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -13,6 +15,8 @@ var serveCmd = &cobra.Command{
 	Short: "start daemon process to serve cli",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Printf("serve %s:%d for marco\n", config.C.HTTP.Host, config.C.HTTP.Port)
+		ctx := context.Background()
+		daemon.Run(ctx)
 	},
 }
 
