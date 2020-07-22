@@ -25,8 +25,18 @@ type RestyInstaller struct {
 	BuildOptions []string
 }
 
+func (r *RestyInstaller) Uninstall() error {
+	err := os.RemoveAll(r.BuildDir)
+	if err != nil {
+		return err
+	}
+	return os.RemoveAll(r.Prefix)
+}
+
 // Install openresty
 func (r *RestyInstaller) Install(ctx context.Context) error {
+	// 清理build dir
+	os.RemoveAll(r.BuildDir)
 	//解压
 	err := r.Extract()
 	if err != nil {
