@@ -4,7 +4,7 @@ SHELL:=/bin/bash
 PROJ=marco
 ORG_PATH=casicloud.com/ylops
 MAKEFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
-ROOT_DIR := $(notdir $(patsubst %/,%,$(dir $(MAKEFILE_PATH))))
+ROOT_DIR := $(patsubst %/,%,$(dir $(MAKEFILE_PATH)))
 export PATH := $(ROOT_DIR)/bin:$(PATH)
 export GOBIN=$(PWD)/bin
 # build number
@@ -15,10 +15,11 @@ LD_FLAGS="-w -X $(ROOT_DIR)/version.Version=$(VERSION)"
 
 SRCS := $(shell find . -name '*.go'| grep -v vendor)
 
-build: bin/marco
+build: bin/polo
 
-bin/marco: ${SRCS}
-	@go install -v -ldflags $(LD_FLAGS) ${ROOT_DIR}/cmd/marco
+bin/polo: ${SRCS}
+	@go install -v -ldflags $(LD_FLAGS) ${ROOT_DIR}/cmd/polo
+	@cp -f ${ROOT_DIR}/cmd/polo/config.yaml  $(ROOT_DIR)/bin/
 
 clean:
 	@rm -rf bin/
@@ -43,3 +44,8 @@ lint:
 			exit 1; \
 		fi; \
 	done
+
+.PHONY: desc
+desc:
+	@echo root dir is $(ROOT_DIR)
+	@echo version is $(VERSION)

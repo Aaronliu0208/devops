@@ -3,6 +3,8 @@ package config
 import (
 	"bytes"
 	"fmt"
+	"os"
+	"path/filepath"
 	"sync"
 
 	homedir "github.com/mitchellh/go-homedir"
@@ -108,7 +110,13 @@ func LoadConfigFile(cfgFile string) (*Config, error) {
 			return config, err
 		}
 
-		// Search config in home directory with name ".ylops" (without extension).
+		// Search config in home directory with name "config" (without extension).
+		dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+		if err != nil {
+			fmt.Println(err)
+			return config, err
+		}
+		viper.AddConfigPath(dir)
 		viper.AddConfigPath(".")
 		viper.AddConfigPath(home)
 		viper.SetConfigName("config")
