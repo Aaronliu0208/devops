@@ -154,6 +154,9 @@ func Marshal(i interface{}) ([]Directive, error) {
 				directives = append(directives, blk)
 			}
 		default:
+			if fv.IsZero() && omit {
+				continue
+			}
 			d = BuildDirective(key, fv.Interface())
 			directives = append(directives, d)
 		}

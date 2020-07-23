@@ -20,7 +20,7 @@ type HTTP struct {
 //Config represent nginx config
 // follows https://www.nginx.com/resources/wiki/start/topics/examples/full/ to build nginx base config
 type Config struct {
-	User            string `kv:"user"`
+	User            string `kv:"user,omitempty"`
 	WorkerProcesses string `kv:"worker_processes"`
 	PId             string `kv:"pid"`
 	ErrorLog        string `kv:"error_log,omitempty"`

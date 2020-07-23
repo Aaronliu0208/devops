@@ -9,17 +9,17 @@ import (
 )
 
 type testMapWithTag struct {
-	Http Options `kv:"http"`
+	HTTP Options `kv:"http"`
 }
 
 type testMapWithOutTag struct {
-	Http Options
+	HTTP Options
 }
 
 func TestMapWithTag(t *testing.T) {
 	emptyBlk := NewEmptyBlock()
 	test := testMapWithTag{
-		Http: Options{
+		HTTP: Options{
 			Pair{"abc", "bcd"},
 		},
 	}
@@ -37,7 +37,7 @@ func TestMapWithTag(t *testing.T) {
 func TestMapWithOutTag(t *testing.T) {
 	emptyBlk := NewEmptyBlock()
 	test := testMapWithOutTag{
-		Http: Options{
+		HTTP: Options{
 			Pair{"abc", "bcd"},
 		},
 	}

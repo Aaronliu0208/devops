@@ -124,7 +124,7 @@ func TestMarshalDirective(t *testing.T) {
 		Rlimit:          204800,
 		GzipOn:          true,
 		Servers: []TestServer{
-			TestServer{
+			{
 				Listen: 80,
 				Domain: "www.baidu.com",
 			},
