@@ -56,6 +56,16 @@ func (p Pair) Marshal() ([]Directive, error) {
 //Options custom options
 type Options []Pair
 
+//Marshal implememt Marshaler
+func (o Options) Marshal() ([]Directive, error) {
+	var ds []Directive
+	for _, opt := range o {
+		ds = append(ds, BuildDirective(opt.Key, opt.Value))
+	}
+
+	return ds, nil
+}
+
 // Len implements sort.Interface
 func (d Options) Len() int { return len(d) }
 

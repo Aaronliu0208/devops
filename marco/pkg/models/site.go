@@ -24,5 +24,33 @@ type Site struct {
 
 //Marshal implements directive Marshaler
 func (s Site) Marshal() ([]nginx.Directive, error) {
-	return nil, nil
+	serverBlk := nginx.NewBlock("server")
+	if len(s.Root) > 0 {
+		serverBlk.AddKVOption("root", s.Root)
+	}
+
+	if s.EnableSSL {
+
+	} else {
+		serverBlk.AddKVOption("listen", s.Port)
+	}
+
+	if len(s.Domain) > 0 {
+		serverBlk.AddKVOption("server_name", s.Domain)
+	}
+
+	if len(s.AccessLog) > 0 {
+		serverBlk.AddKVOption("access_log", []string{s.AccessLog, "main"})
+	}
+
+	if len(s.ErrorLog) > 0 {
+		serverBlk.AddKVOption("error_log", []string{s.ErrorLog, "warn"})
+	}
+
+	for _, r := range s.Routes {
+		serverBlk.AddInterface(r)
+	}
+	serverBlk.AddInterface(s.Extras)
+
+	return []nginx.Directive{serverBlk}, nil
 }
