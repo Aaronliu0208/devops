@@ -11,6 +11,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"casicloud.com/ylops/marco/pkg/logger"
@@ -31,6 +32,32 @@ func (r *RestyInstaller) Uninstall() error {
 		return err
 	}
 	return os.RemoveAll(r.Prefix)
+}
+
+// CheckExists check resty exists
+func (r *RestyInstaller) CheckExists() (string, bool) {
+	var list []string
+	err := filepath.Walk(r.Prefix, func(path string, f os.FileInfo, err error) error {
+		if f == nil {
+			return err
+		}
+		if f.IsDir() {
+			return nil
+		}
+
+		//正则匹配路径名和需要查找的文件名
+		ok, _ := regexp.MatchString("nginx$", path)
+		if ok && IsExecAll(f.Mode()) {
+			list = append(list, path)
+		}
+		return nil
+	})
+	exists := err == nil && len(list) != 0
+	if exists {
+		return list[0], true
+	}
+
+	return "", false
 }
 
 // Install openresty

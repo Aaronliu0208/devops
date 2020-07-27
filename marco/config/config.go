@@ -36,6 +36,21 @@ func (c Config) GetPrefix() string {
 	return filepath.Join(c.Workspace, "app")
 }
 
+//GetNginxBinPath get nginx bin path
+func (c Config) GetNginxBinPath() string {
+	return filepath.Join(c.Workspace, "app/nginx/sbin/nginx")
+}
+
+//GetLogDir get log prefix dir
+func (c Config) GetLogDir() string {
+	return filepath.Join(c.Workspace, "logs")
+}
+
+//GetTempDir get temp file folder
+func (c Config) GetTempDir() string {
+	return filepath.Join(c.Workspace, ".tmp")
+}
+
 // HTTP config for http server
 type HTTP struct {
 	Host            string `mapstructure:"host,omitempty"`
@@ -53,7 +68,8 @@ type Log struct {
 	Format string `mapstructure:"format,omitempty"`
 	// output type like stdout/stderr/file
 	Output string `mapstructure:"output,omitempty"`
-	File   string `mapstructure:"file,omitempty"`
+	// File name for app log
+	File string `mapstructure:"file,omitempty"`
 }
 
 // Git config for git
