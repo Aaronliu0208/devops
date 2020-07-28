@@ -95,16 +95,6 @@ var (
 		Use:               "epoll",
 		MultiAccept:       true,
 	}
-
-	defaultConfig = Config{
-		User:            "nobody nobody",
-		WorkerProcesses: "auto",
-		PId:             "logs/nginx.pid",
-		ErrorLog:        "logs/error.log",
-		LimitNofile:     8192,
-		Events:          defaultEvents,
-		HTTP:            NewDefaultHTTPConfig(),
-	}
 )
 
 // NewDefaultHTTPConfig create default http Config

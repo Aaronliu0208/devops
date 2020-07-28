@@ -1,10 +1,14 @@
 package app
 
 import (
+	"fmt"
+	"os"
+
 	"casicloud.com/ylops/marco/config"
 	"casicloud.com/ylops/marco/pkg/erron"
 	"casicloud.com/ylops/marco/pkg/logger"
 	"casicloud.com/ylops/marco/pkg/models"
+	"casicloud.com/ylops/marco/pkg/utils"
 	"casicloud.com/ylops/marco/resources"
 )
 
@@ -31,6 +35,14 @@ func NewPM(config *config.Config) *PackageManager {
 
 	return pm
 }
+func (pm *PackageManager) Init() error {
+	// create all work dirs
+	if err := pm.Config.EnsureDirectoryExists(); err != nil {
+		return err
+	}
+	// init repo
+	return nil
+}
 
 // Start cluster
 func (pm *PackageManager) Start(cluster *models.Cluster) error {
@@ -40,11 +52,40 @@ func (pm *PackageManager) Start(cluster *models.Cluster) error {
 	}
 	// build nginx config
 	log.Debugln("begin build nginx config")
+	config, err := cluster.GenerateConfig()
+	if err != nil {
+		return err
+	}
+
+	// create temp config
+	tmpDir := pm.Config.GetTempDir()
+	if _, err := os.Stat(tmpDir); os.IsNotExist(err) {
+		os.MkdirAll(tmpDir, 0777)
+	}
+	tmpFIlePath, err := utils.GenerateTempFileName(tmpDir, "nginx.conf.*")
+	if err != nil {
+		return err
+	}
+	if err = utils.AppendFileString(tmpFIlePath, config); err != nil {
+		return err
+	}
 
 	log.Debugln("begin start resty")
 	ctl := &NginxController{
-		BinPath: binPath,
+		BinPath:    binPath,
+		Prefix:     pm.Config.GetPrefix(),
+		ConfigFile: tmpFIlePath,
+		PidFile:    pm.Config.GetPid(),
 	}
 
-	return ctl.Start()
+	ok, err := ctl.Test()
+	if err != nil {
+		return err
+	}
+
+	if ok {
+		return ctl.Start()
+	}
+
+	return fmt.Errorf("start cluster fail")
 }

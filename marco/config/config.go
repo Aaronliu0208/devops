@@ -51,6 +51,29 @@ func (c Config) GetTempDir() string {
 	return filepath.Join(c.Workspace, ".tmp")
 }
 
+func (c Config) GetPid() string {
+	return filepath.Join(c.GetLogDir(), "nginx.pid")
+}
+
+func (c Config) EnsureDirectoryExists() error {
+	if err := os.MkdirAll(c.GetBuildDir(), 0777); err != nil {
+		return err
+	}
+
+	if err := os.MkdirAll(c.GetLogDir(), 0777); err != nil {
+		return err
+	}
+
+	if err := os.MkdirAll(c.GetPrefix(), 0777); err != nil {
+		return err
+	}
+
+	if err := os.MkdirAll(c.GetTempDir(), 0777); err != nil {
+		return err
+	}
+	return nil
+}
+
 // HTTP config for http server
 type HTTP struct {
 	Host            string `mapstructure:"host,omitempty"`

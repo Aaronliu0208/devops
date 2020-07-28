@@ -1,12 +1,13 @@
 package models
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"casicloud.com/ylops/marco/pkg/nginx"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestClusterGenerator(t *testing.T) {
@@ -33,9 +34,6 @@ func TestClusterGenerator(t *testing.T) {
 		},
 		Root:      "html/site1",
 		AccessLog: "logs/access.log",
-		Extras: nginx.Options{
-			{"shanyou", "great"},
-		},
 	}
 	cluster := &Cluster{
 		Config: config,
@@ -49,5 +47,9 @@ func TestClusterGenerator(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	fmt.Print(nginxConf)
+	assert.True(t, strings.Contains(nginxConf, "http {"))
+	assert.True(t, strings.Contains(nginxConf, "types {"))
+	assert.True(t, strings.Contains(nginxConf, "events {"))
+	assert.True(t, strings.Contains(nginxConf, "worker_processes"))
+	assert.True(t, strings.Contains(nginxConf, "proxy_pass http://www.baidu.com;"))
 }

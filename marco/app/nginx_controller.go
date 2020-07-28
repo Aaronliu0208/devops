@@ -67,6 +67,7 @@ func (n *NginxController) Start() error {
 		var outbuf, errbuf bytes.Buffer
 		cmd.Stdout = &outbuf
 		cmd.Stderr = &errbuf
+		cmd.Dir = n.Prefix
 		err := cmd.Start()
 		if err == nil {
 			if err := cmd.Wait(); err != nil {
@@ -94,6 +95,7 @@ func (n *NginxController) Stop() error {
 	var outbuf, errbuf bytes.Buffer
 	cmd.Stdout = &outbuf
 	cmd.Stderr = &errbuf
+	cmd.Dir = n.Prefix
 	err := cmd.Start()
 	if err == nil {
 		if err := cmd.Wait(); err != nil {
@@ -115,6 +117,7 @@ func (n *NginxController) Reload() error {
 	var outbuf, errbuf bytes.Buffer
 	cmd.Stdout = &outbuf
 	cmd.Stderr = &errbuf
+	cmd.Dir = n.Prefix
 	err := cmd.Start()
 	if err == nil {
 		if err := cmd.Wait(); err != nil {
@@ -136,17 +139,20 @@ func (n *NginxController) Test() (bool, error) {
 	var outbuf, errbuf bytes.Buffer
 	cmd.Stdout = &outbuf
 	cmd.Stderr = &errbuf
-	err := cmd.Start()
+	cmd.Dir = n.Prefix
+	err := cmd.Run()
 	if err != nil {
-		return false, err
-	}
-
-	if err := cmd.Wait(); err != nil {
+		// fmt.Println(fmt.Sprint(err) + ": " + errbuf.String())
+		if errbuf.Len() != 0 {
+			return strings.Contains(errbuf.String(), "test is successful"), nil
+		}
 		return false, err
 	}
 
 	if errbuf.Len() != 0 {
-		return strings.Contains(errbuf.String(), "syntax is ok"), nil
+		// fmt.Println(errbuf.String())
+		return strings.Contains(errbuf.String(), "test is successful"), nil
 	}
-	return strings.Contains(outbuf.String(), "syntax is ok"), nil
+	// fmt.Println(outbuf.String())
+	return strings.Contains(outbuf.String(), "test is successful"), nil
 }

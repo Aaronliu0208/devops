@@ -44,4 +44,5 @@ func init() {
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
 	config.InitConfig(cfgFile)
+	config.C.EnsureDirectoryExists()
 }
