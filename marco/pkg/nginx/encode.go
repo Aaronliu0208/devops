@@ -45,7 +45,19 @@ func Marshal(i interface{}) ([]Directive, error) {
 		if f.PkgPath != "" {
 			continue
 		}
-		if f.Type.Implements(marshalerType) {
+
+		fv := getValue(v.Field(i))
+		if !fv.IsValid() {
+			return nil, errors.New("invalid input value")
+		}
+
+		key, omit, findTag := readTag(f) //omit 忽略, "-"忽略
+		if strings.Compare(key, "-") == 0 {
+			// ignore
+			continue
+		}
+
+		if f.Type.Implements(marshalerType) && !findTag {
 			fv := v.Field(i)
 			if fv.IsNil() {
 				continue
@@ -58,17 +70,6 @@ func Marshal(i interface{}) ([]Directive, error) {
 				}
 				continue
 			}
-		}
-
-		fv := getValue(v.Field(i))
-		if !fv.IsValid() {
-			return nil, errors.New("invalid input value")
-		}
-
-		key, omit, findTag := readTag(f) //omit 忽略, "-"忽略
-		if strings.Compare(key, "-") == 0 {
-			// ignore
-			continue
 		}
 		var d Directive
 		switch fv.Kind() {
