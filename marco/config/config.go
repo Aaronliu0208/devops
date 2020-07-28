@@ -41,6 +41,10 @@ func (c Config) GetNginxBinPath() string {
 	return filepath.Join(c.Workspace, "app/nginx/sbin/nginx")
 }
 
+func (c Config) GetNginxConfigPath() string {
+	return filepath.Join(c.Workspace, "app/nginx/conf/nginx.conf")
+}
+
 //GetLogDir get log prefix dir
 func (c Config) GetLogDir() string {
 	return filepath.Join(c.Workspace, "logs")

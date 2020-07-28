@@ -3,6 +3,7 @@ package app
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -62,7 +63,8 @@ func (n *NginxController) setDefault() {
 // Start nginx instance
 func (n *NginxController) Start() error {
 	n.setDefault()
-	if _, err := os.Stat(n.PidFile); os.IsNotExist(err) {
+	finfo, err := os.Stat(n.PidFile)
+	if os.IsNotExist(err) || finfo.Size() == 0 {
 		cmd := exec.Command(n.BinPath, "-p", n.Prefix, "-c", n.ConfigFile)
 		var outbuf, errbuf bytes.Buffer
 		cmd.Stdout = &outbuf
@@ -71,6 +73,7 @@ func (n *NginxController) Start() error {
 		err := cmd.Start()
 		if err == nil {
 			if err := cmd.Wait(); err != nil {
+				fmt.Println(fmt.Sprint(err) + ": " + errbuf.String())
 				return err
 			}
 			if errbuf.Len() != 0 {

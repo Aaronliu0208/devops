@@ -33,12 +33,29 @@ func CreateFileRecursive(p string) (*os.File, error) {
 	return os.Create(p)
 }
 
-func WriteFileString(path, content string) error {
-	if _, err := os.Stat(path); err == nil {
-		return errors.New("file already exists")
+//MoveFile 先创建目录在移动， 如果存在就覆盖
+func MoveFile(src, dest string, overwrite bool) error {
+	if _, err := os.Stat(src); os.IsNotExist(err) {
+		return err
 	}
 
-	return AppendFileString(path, content)
+	if err := os.MkdirAll(filepath.Dir(dest), 0777); err != nil {
+		return err
+	}
+
+	_, err := os.Stat(dest)
+	if err == nil {
+
+	} else if overwrite {
+		err = os.RemoveAll(dest)
+		if err != nil {
+			return err
+		}
+	} else {
+		return err
+	}
+
+	return os.Rename(src, dest)
 }
 
 func AppendFileString(path, content string) error {

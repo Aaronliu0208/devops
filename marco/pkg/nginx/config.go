@@ -13,6 +13,7 @@ type HTTP struct {
 	LogFormat   string  `kv:"log_format"`
 	MimeTypes   Options `kv:"types"`
 	AccessLog   string  `kv:"access_log,omitempty"`
+	ErrorLog    string  `kv:"error_log,omitempty"`
 	SendFile    bool    `kv:"sendfile"`
 	ExtConfig   Options
 }

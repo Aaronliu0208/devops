@@ -34,6 +34,7 @@ func TestPMStart(t *testing.T) {
 		},
 		Root:      "html/site1",
 		AccessLog: conf.GetLogDir() + "/www.baidu.com-access.log",
+		ErrorLog:  conf.GetLogDir() + "/www.baidu.com-error.log",
 	}
 	cluster := &models.Cluster{
 		Config: ngxConf,

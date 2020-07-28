@@ -73,7 +73,7 @@ func (pm *PackageManager) Start(cluster *models.Cluster) error {
 	log.Debugln("begin start resty")
 	ctl := &NginxController{
 		BinPath:    binPath,
-		Prefix:     pm.Config.GetPrefix(),
+		Prefix:     pm.Config.Workspace, //这里要求Prefix在Workspace目录下
 		ConfigFile: tmpFIlePath,
 		PidFile:    pm.Config.GetPid(),
 	}
@@ -84,6 +84,12 @@ func (pm *PackageManager) Start(cluster *models.Cluster) error {
 	}
 
 	if ok {
+		//mv temp file to config folder
+		err := utils.MoveFile(tmpFIlePath, pm.Config.GetNginxConfigPath(), true)
+		if err != nil {
+			return err
+		}
+		ctl.ConfigFile = pm.Config.GetNginxBinPath()
 		return ctl.Start()
 	}
 
