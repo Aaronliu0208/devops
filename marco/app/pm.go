@@ -36,7 +36,7 @@ func NewPM(config *config.Config) *PackageManager {
 func (pm *PackageManager) Start(cluster *models.Cluster) error {
 	binPath, exists := pm.Installer.CheckExists()
 	if !exists {
-		return erron.New(nil, erron.ErrFileNotFound, "resty not install")
+		return erron.New(erron.ErrFileNotFound, "resty not install")
 	}
 	// build nginx config
 	log.Debugln("begin build nginx config")

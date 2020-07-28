@@ -46,10 +46,10 @@ func WrapError(err error, code int, msg string) error {
 }
 
 //New create new error of marco error
-func New(err error, code int, msg string) error {
+func New(code int, msg string) error {
 	return &MarcoError{
 		Code:    code,
 		Message: msg,
-		ERR:     err,
+		ERR:     nil,
 	}
 }
