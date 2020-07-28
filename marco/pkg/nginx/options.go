@@ -13,13 +13,15 @@ var (
 //KeyValueOption A key/value directive. This covers most directives available for Nginx
 type KeyValueOption struct {
 	Base
+	name  string
 	value string
 }
 
 //NewKVOption init keyvalue option with key and give value
 func NewKVOption(name string, value interface{}) *KeyValueOption {
 	return &KeyValueOption{
-		Base:  NewDefaultBase(name),
+		Base:  NewDefaultBase(),
+		name:  name,
 		value: CovertToString(value),
 	}
 }
@@ -31,4 +33,9 @@ func (k KeyValueOption) String() string {
 //Value implements Directive
 func (k KeyValueOption) Value() interface{} {
 	return k.value
+}
+
+//Value implements Directive
+func (k KeyValueOption) Name() string {
+	return k.name
 }

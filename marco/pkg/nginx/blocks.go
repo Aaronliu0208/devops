@@ -12,13 +12,15 @@ import (
 // which can be other Block objects or option objects.
 type Block struct {
 	Base
+	name    string
 	Options Directives
 }
 
 //NewBlock construct of a block
 func NewBlock(name string) *Block {
 	block := &Block{
-		Base: NewDefaultBase(name),
+		name: name,
+		Base: NewDefaultBase(),
 	}
 
 	block.Options = Directives{}
@@ -58,6 +60,11 @@ func (b *Block) AddDirectives(directives []Directive) {
 			b.AddDirective(d)
 		}
 	}
+}
+
+// Name implements Directive Interface
+func (b Block) Name() string {
+	return b.name
 }
 
 //Value implements Directive
@@ -103,30 +110,25 @@ func (b *EmptyBlock) String() string {
 	return builder.String()
 }
 
-// Location nginx directive
-type Location struct {
-	Block
-}
-
-//NewLocation new location
-func NewLocation(location string) *Location {
-	return &Location{
-		Block: *NewBlock("location " + location),
-	}
-}
-
 //CustomBlock custom block like init_by_lua....
 type CustomBlock struct {
 	Base
+	name  string
 	value string
 }
 
 //NewCustomBlock create custom block
 func NewCustomBlock(name, value string) *CustomBlock {
 	return &CustomBlock{
-		Base:  NewDefaultBase(name),
+		Base:  NewDefaultBase(),
 		value: value,
+		name:  name,
 	}
+}
+
+// Name implements Directive Interface
+func (c *CustomBlock) Name() string {
+	return c.name
 }
 
 //Value implements Directive

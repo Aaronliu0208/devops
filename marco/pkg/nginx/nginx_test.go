@@ -37,19 +37,19 @@ func TestRefect(t *testing.T) {
 }
 
 func TestBaseGetIndent(t *testing.T) {
-	b := NewBase("shanyou", 2, 4, 'a', nil)
+	b := NewBase(2, 4, 'a', nil)
 	assert.Equal(t, b.GetIndent(), "aaaaaaaa", "Base getIndent fail")
 }
 
 func TestBaseRender(t *testing.T) {
-	b := NewBase("server", 1, 4, 'a', nil)
+	b := NewBase(1, 4, 'a', nil)
 	t.Log(b.Render("server"))
 	assert.Equal(t, b.Render("server"), "\naaaaserver", "Base render fail")
 }
 
 func TestHash(t *testing.T) {
 	var parent = "shanyou"
-	b := NewBase("server", 1, 4, 'a', parent)
+	b := NewBase(1, 4, 'a', parent)
 	t.Log(AsSha256(b))
 }
 
@@ -86,7 +86,7 @@ func TestBlockRender(t *testing.T) {
 	serverblk := NewBlock("server")
 	block.AddDirective(serverblk)
 	serverblk.AddKVOption("listent", "80")
-	location := NewLocation("/")
+	location := NewBlock("location /")
 	location.AddKVOption("return", "200")
 	serverblk.AddDirective(location)
 	fmt.Println(config)

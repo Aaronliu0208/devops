@@ -90,28 +90,25 @@ type Base struct {
 	IndentChar  byte
 	Indent      int
 	parent      interface{}
-	name        string
 }
 
 //NewDefaultBase default config base
-func NewDefaultBase(name string) Base {
+func NewDefaultBase() Base {
 	return Base{
 		IndentLevel: 0,
 		IndentChar:  ' ',
 		Indent:      4,
 		parent:      nil,
-		name:        name,
 	}
 }
 
 //NewBase create new Base Object
-func NewBase(name string, level, indent int, char byte, parent interface{}) Base {
+func NewBase(level, indent int, char byte, parent interface{}) Base {
 	return Base{
 		IndentLevel: level,
 		IndentChar:  char,
 		Indent:      indent,
 		parent:      parent,
-		name:        name,
 	}
 }
 
@@ -149,9 +146,4 @@ func (b Base) Parent() interface{} {
 //SetParent implements Directive
 func (b *Base) SetParent(parent interface{}) {
 	b.parent = parent
-}
-
-// Name implements Directive Interface
-func (b Base) Name() string {
-	return b.name
 }
