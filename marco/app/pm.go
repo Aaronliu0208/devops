@@ -89,7 +89,7 @@ func (pm *PackageManager) Start(cluster *models.Cluster) error {
 		if err != nil {
 			return err
 		}
-		ctl.ConfigFile = pm.Config.GetNginxBinPath()
+		ctl.ConfigFile = pm.Config.GetNginxConfigPath()
 		return ctl.Start()
 	}
 
