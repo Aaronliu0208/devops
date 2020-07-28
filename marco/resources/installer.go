@@ -15,6 +15,7 @@ import (
 	"strings"
 
 	"casicloud.com/ylops/marco/pkg/logger"
+	"casicloud.com/ylops/marco/pkg/utils"
 )
 
 var log = logger.Get("RestyInstaller", nil)
@@ -47,7 +48,7 @@ func (r *RestyInstaller) CheckExists() (string, bool) {
 
 		//正则匹配路径名和需要查找的文件名
 		ok, _ := regexp.MatchString("nginx$", path)
-		if ok && IsExecAll(f.Mode()) {
+		if ok && utils.IsExecAll(f.Mode()) {
 			list = append(list, path)
 		}
 		return nil
