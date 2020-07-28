@@ -27,7 +27,10 @@ func TestMapWithTag(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	emptyBlk.AddDirectives(ds)
+
+	for _, d := range ds {
+		emptyBlk.AddDirective(d)
+	}
 	str := emptyBlk.String()
 	fmt.Println(str)
 	assert.True(t, strings.Contains(strings.ToLower(str), "http"))
@@ -45,7 +48,11 @@ func TestMapWithOutTag(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	emptyBlk.AddDirectives(ds)
+
+	for _, d := range ds {
+		emptyBlk.AddDirective(d)
+	}
+
 	str := emptyBlk.String()
 	fmt.Println(str)
 	assert.False(t, strings.Contains(strings.ToLower(str), "http"))

@@ -23,5 +23,17 @@ type Cluster struct {
 func (c *Cluster) GenerateConfig() (string, error) {
 	emptyblk := &nginx.EmptyBlock{}
 	emptyblk.AddInterface(c.Config)
+	d, err := emptyblk.FindDirectiveByName("http")
+	if err != nil {
+		return "", err
+	}
+
+	if b, ok := d.(nginx.BlockDirective); ok {
+		if len(c.Sites) > 0 {
+			for _, s := range c.Sites {
+				b.AddInterface(s)
+			}
+		}
+	}
 	return emptyblk.String(), nil
 }

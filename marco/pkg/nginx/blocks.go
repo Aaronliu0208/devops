@@ -5,7 +5,17 @@ import (
 	"bytes"
 	"fmt"
 	"strings"
+
+	"casicloud.com/ylops/marco/pkg/erron"
 )
+
+type BlockDirective interface {
+	Directive
+	AddDirective(d Directive)
+	AddInterface(i interface{})
+	AddKVOption(key string, value interface{})
+	FindDirectiveByName(name string) (Directive, error)
+}
 
 // Block A block represent a named section of an Nginx config, such as 'http', 'server' or 'location'
 //  Using this object is as simple as providing a name and any sections or options,
@@ -60,6 +70,29 @@ func (b *Block) AddDirectives(directives []Directive) {
 			b.AddDirective(d)
 		}
 	}
+}
+
+func (b *Block) FindDirectiveByName(name string) (Directive, error) {
+	if b.Name() == name {
+		return b, nil
+	}
+
+	if b.Options.Len() > 0 {
+		for _, opt := range b.Options {
+			if opt.Name() == name {
+				return opt, nil
+			}
+
+			if o, ok := opt.(BlockDirective); ok {
+				bd, err := o.FindDirectiveByName(name)
+				if err == nil {
+					return bd, nil
+				}
+			}
+		}
+	}
+
+	return nil, erron.New(erron.ErrFileNotFound, fmt.Sprintf("can not find block with name %s", name))
 }
 
 // Name implements Directive Interface
