@@ -40,6 +40,8 @@ func (pm *PackageManager) Start(cluster *models.Cluster) error {
 	}
 	// build nginx config
 	log.Debugln("begin build nginx config")
+
+	log.Debugln("begin start resty")
 	ctl := &NginxController{
 		BinPath: binPath,
 	}

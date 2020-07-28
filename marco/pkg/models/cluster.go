@@ -14,7 +14,14 @@ type Cluster struct {
 	Description string
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
-	Config      nginx.Config
+	Config      *nginx.Config
 	Sites       []Site
 	Upstreams   []Upstream
+}
+
+//GenerateConfig with cluster
+func (c *Cluster) GenerateConfig() (string, error) {
+	emptyblk := &nginx.EmptyBlock{}
+	emptyblk.AddInterface(c.Config)
+	return emptyblk.String(), nil
 }
