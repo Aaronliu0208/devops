@@ -23,7 +23,7 @@ type Route struct {
 }
 
 //Marshal implements directive Marshaler
-func (r Route) Marshal() ([]nginx.Directive, error) {
+func (r Route) MarshalD() ([]nginx.Directive, error) {
 	location := "location " + r.Pattern + " " + r.Path
 	locationBlk := nginx.NewBlock(location)
 	if len(r.Root) > 0 {

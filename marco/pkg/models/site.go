@@ -23,7 +23,7 @@ type Site struct {
 }
 
 //Marshal implements directive Marshaler
-func (s Site) Marshal() ([]nginx.Directive, error) {
+func (s Site) MarshalD() ([]nginx.Directive, error) {
 	serverBlk := nginx.NewBlock("server")
 	if len(s.Root) > 0 {
 		serverBlk.AddKVOption("root", s.Root)
