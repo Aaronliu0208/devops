@@ -20,10 +20,10 @@ func TestMapWithTag(t *testing.T) {
 	emptyBlk := NewEmptyBlock()
 	test := testMapWithTag{
 		HTTP: Options{
-			Pair{"abc", "bcd"},
+			{"abc", "bcd"},
 		},
 	}
-	ds, err := Marshal(test)
+	ds, err := MarshalD(test)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -41,10 +41,10 @@ func TestMapWithOutTag(t *testing.T) {
 	emptyBlk := NewEmptyBlock()
 	test := testMapWithOutTag{
 		HTTP: Options{
-			Pair{"abc", "bcd"},
+			{"abc", "bcd"},
 		},
 	}
-	ds, err := Marshal(test)
+	ds, err := MarshalD(test)
 	if err != nil {
 		t.Fatal(err)
 	}

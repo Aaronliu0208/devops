@@ -2,13 +2,43 @@ package nginx
 
 import (
 	"fmt"
-	"reflect"
 )
 
-var (
-	stringType    = reflect.TypeOf("")
-	stringPtrType = reflect.TypeOf((*string)(nil))
-)
+//Option for nginx command
+type Option []string
+
+//MarshalD implememt Marshaler
+func (o Option) MarshalD() ([]Directive, error) {
+	return []Directive{
+		NewOption(o),
+	}, nil
+}
+
+//Options represent list of words as kvoption
+type Options []Option
+
+//MarshalD implememt Marshaler
+func (o Options) MarshalD() ([]Directive, error) {
+	var ds []Directive
+	for _, opt := range o {
+		ds = append(ds, NewOption(opt))
+	}
+
+	return ds, nil
+}
+
+//NewOption with given strings
+func NewOption(words []string) *KeyValueOption {
+	if len(words) == 0 {
+		return nil // empty Option
+	} else if len(words) == 1 {
+		return NewKVOption(words[0], nil)
+	} else if len(words) == 2 {
+		return NewKVOption(words[0], words[1])
+	} else {
+		return NewKVOption(words[0], words[1:])
+	}
+}
 
 //KeyValueOption A key/value directive. This covers most directives available for Nginx
 type KeyValueOption struct {

@@ -8,20 +8,18 @@ import (
 	"strings"
 )
 
-// Marshaler is the interface implemented by types that
-// can marshal themselves into valid Directive.
-type Marshaler interface {
-	Marshal() ([]Directive, error)
-}
-
-var marshalerType = reflect.TypeOf((*Marshaler)(nil)).Elem()
+var (
+	marshalerType = reflect.TypeOf((*Marshaler)(nil)).Elem()
+	stringType    = reflect.TypeOf("")
+	stringPtrType = reflect.TypeOf((*string)(nil))
+)
 
 //Marshal marshal struct to directives such KeyValueOption
-func Marshal(i interface{}) ([]Directive, error) {
+func MarshalD(i interface{}) ([]Directive, error) {
 	//如果接口实现Marshaler则直接调用
 	iv, ok := i.(Marshaler)
 	if ok {
-		return iv.Marshal()
+		return iv.MarshalD()
 	}
 
 	//is Directive return it self
@@ -63,7 +61,7 @@ func Marshal(i interface{}) ([]Directive, error) {
 				continue
 			}
 			m, _ := fv.Interface().(Marshaler)
-			ds, err := m.Marshal()
+			ds, err := m.MarshalD()
 			if err == nil {
 				for _, dd := range ds {
 					directives = append(directives, dd)
@@ -77,7 +75,7 @@ func Marshal(i interface{}) ([]Directive, error) {
 			continue
 		case reflect.Interface, reflect.Struct:
 			b := NewBlock(key)
-			dd, err := Marshal(fv.Interface())
+			dd, err := MarshalD(fv.Interface())
 			if err != nil {
 				continue
 			}
@@ -109,7 +107,7 @@ func Marshal(i interface{}) ([]Directive, error) {
 					b := NewBlock(key)
 					for i := 0; i < fv.Len(); i++ {
 						ifv := fv.Index(i)
-						dd, err := Marshal(ifv.Interface())
+						dd, err := MarshalD(ifv.Interface())
 						if err != nil {
 							continue
 						}
@@ -121,7 +119,7 @@ func Marshal(i interface{}) ([]Directive, error) {
 				} else {
 					for i := 0; i < fv.Len(); i++ {
 						ifv := fv.Index(i)
-						dd, err := Marshal(ifv.Interface())
+						dd, err := MarshalD(ifv.Interface())
 						if err != nil {
 							continue
 						}

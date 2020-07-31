@@ -27,8 +27,8 @@ func TestClusterGenerator(t *testing.T) {
 			{
 				Pattern: "",
 				Path:    "/",
-				Extras: []nginx.Pair{
-					{Key: "proxy_pass", Value: "http://www.baidu.com"},
+				Extras: nginx.Options{
+					{"proxy_pass", "http://www.baidu.com"},
 				},
 			},
 		},

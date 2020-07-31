@@ -144,7 +144,7 @@ func TestMarshalDirective(t *testing.T) {
 func TestMarshaler(t *testing.T) {
 	test := &MarshalTest{}
 
-	ds, err := Marshal(test)
+	ds, err := MarshalD(test)
 
 	if err != nil {
 		t.Fatal(err)
@@ -166,7 +166,7 @@ func TestStructFieldMarshaler(t *testing.T) {
 		Marshal: &MarshalTest{},
 	}
 
-	ds, err := Marshal(testConfig)
+	ds, err := MarshalD(testConfig)
 
 	if err != nil {
 		t.Fatal(err)

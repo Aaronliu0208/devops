@@ -9,14 +9,6 @@ import (
 	"casicloud.com/ylops/marco/pkg/erron"
 )
 
-type BlockDirective interface {
-	Directive
-	AddDirective(d Directive)
-	AddInterface(i interface{})
-	AddKVOption(key string, value interface{})
-	FindDirectiveByName(name string) (Directive, error)
-}
-
 // Block A block represent a named section of an Nginx config, such as 'http', 'server' or 'location'
 //  Using this object is as simple as providing a name and any sections or options,
 // which can be other Block objects or option objects.
@@ -46,7 +38,7 @@ func (b *Block) AddDirective(d Directive) {
 
 //AddInterface add options
 func (b *Block) AddInterface(i interface{}) {
-	directives, err := Marshal(i)
+	directives, err := MarshalD(i)
 	if err == nil {
 		for _, d := range directives {
 			if d != nil {

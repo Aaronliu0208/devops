@@ -12,8 +12,8 @@ func TestRouteMarshal(t *testing.T) {
 	r := &Route{
 		Pattern: "",
 		Path:    "/",
-		Extras: []nginx.Pair{
-			{Key: "echo", Value: "hello"},
+		Extras: nginx.Options{
+			{"echo", "hello"},
 		},
 	}
 	emptyBlk := nginx.NewEmptyBlock()

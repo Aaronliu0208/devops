@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	defaultProxyConfig = []Pair{
+	defaultProxyConfig = Options{
 		{"proxy_redirect", "off"},
 		{"proxy_set_header", "Host $host"},
 		{"proxy_set_header", "X-Real-IP $remote_addr"},
@@ -19,7 +19,7 @@ var (
 		{"proxy_buffers", "32 4k"},
 	}
 
-	defaultFastcgiConfig = []Pair{
+	defaultFastcgiConfig = Options{
 		{"fastcgi_param", "SCRIPT_FILENAME $document_root$fastcgi_script_name"},
 		{"fastcgi_param", "QUERY_STRING $query_string"},
 		{"fastcgi_param", "REQUEST_METHOD $request_method"},
@@ -42,52 +42,52 @@ var (
 	}
 
 	defaultMimeTypes = Options{
-		Pair{"text/html", "html htm shtml"},
-		Pair{"text/css", "css"},
-		Pair{"text/xml", "xml rss"},
-		Pair{"image/gif", "gif"},
-		Pair{"image/jpeg", "jpeg jpg"},
-		Pair{"application/x-javascript", "js"},
-		Pair{"text/plain", "txt"},
-		Pair{"text/x-component", "htc"},
-		Pair{"text/mathml", "mml"},
-		Pair{"image/png", "png"},
-		Pair{"image/x-icon", "ico"},
-		Pair{"image/x-jng", "jng"},
-		Pair{"image/vnd.wap.wbmp", "wbmp"},
-		Pair{"application/java-archive", "jar war ear"},
-		Pair{"application/mac-binhex40", "hqx"},
-		Pair{"application/pdf", "pdf"},
-		Pair{"application/x-cocoa", "cco"},
-		Pair{"application/x-java-archive-diff", "jardiff"},
-		Pair{"application/x-java-jnlp-file", "jnlp"},
-		Pair{"application/x-makeself", "run"},
-		Pair{"application/x-perl", "pl pm"},
-		Pair{"application/x-pilot", "prc pdb"},
-		Pair{"application/x-rar-compressed", "rar"},
-		Pair{"application/x-redhat-package-manager", "rpm"},
-		Pair{"application/x-sea", "sea"},
-		Pair{"application/x-shockwave-flash", "swf"},
-		Pair{"application/x-stuffit", "sit"},
-		Pair{"application/x-tcl", "tcl tk"},
-		Pair{"application/x-x509-ca-cert", "der pem crt"},
-		Pair{"application/x-xpinstall", "xpi"},
-		Pair{"application/zip", "zip"},
-		Pair{"application/octet-stream", "deb"},
-		Pair{"application/octet-stream", "bin exe dll"},
-		Pair{"application/octet-stream", "dmg"},
-		Pair{"application/octet-stream", "eot"},
-		Pair{"application/octet-stream", "iso img"},
-		Pair{"application/octet-stream", "msi msp msm"},
-		Pair{"audio/mpeg", "mp3"},
-		Pair{"audio/x-realaudio", "ra"},
-		Pair{"video/mpeg", "mpeg mpg"},
-		Pair{"video/quicktime", "mov"},
-		Pair{"video/x-flv", "flv"},
-		Pair{"video/x-msvideo", "avi"},
-		Pair{"video/x-ms-wmv", "wmv"},
-		Pair{"video/x-ms-asf", "asx asf"},
-		Pair{"video/x-mng", "mng"},
+		{"text/html", "html htm shtml"},
+		{"text/css", "css"},
+		{"text/xml", "xml rss"},
+		{"image/gif", "gif"},
+		{"image/jpeg", "jpeg jpg"},
+		{"application/x-javascript", "js"},
+		{"text/plain", "txt"},
+		{"text/x-component", "htc"},
+		{"text/mathml", "mml"},
+		{"image/png", "png"},
+		{"image/x-icon", "ico"},
+		{"image/x-jng", "jng"},
+		{"image/vnd.wap.wbmp", "wbmp"},
+		{"application/java-archive", "jar war ear"},
+		{"application/mac-binhex40", "hqx"},
+		{"application/pdf", "pdf"},
+		{"application/x-cocoa", "cco"},
+		{"application/x-java-archive-diff", "jardiff"},
+		{"application/x-java-jnlp-file", "jnlp"},
+		{"application/x-makeself", "run"},
+		{"application/x-perl", "pl pm"},
+		{"application/x-pilot", "prc pdb"},
+		{"application/x-rar-compressed", "rar"},
+		{"application/x-redhat-package-manager", "rpm"},
+		{"application/x-sea", "sea"},
+		{"application/x-shockwave-flash", "swf"},
+		{"application/x-stuffit", "sit"},
+		{"application/x-tcl", "tcl tk"},
+		{"application/x-x509-ca-cert", "der pem crt"},
+		{"application/x-xpinstall", "xpi"},
+		{"application/zip", "zip"},
+		{"application/octet-stream", "deb"},
+		{"application/octet-stream", "bin exe dll"},
+		{"application/octet-stream", "dmg"},
+		{"application/octet-stream", "eot"},
+		{"application/octet-stream", "iso img"},
+		{"application/octet-stream", "msi msp msm"},
+		{"audio/mpeg", "mp3"},
+		{"audio/x-realaudio", "ra"},
+		{"video/mpeg", "mpeg mpg"},
+		{"video/quicktime", "mov"},
+		{"video/x-flv", "flv"},
+		{"video/x-msvideo", "avi"},
+		{"video/x-ms-wmv", "wmv"},
+		{"video/x-ms-asf", "asx asf"},
+		{"video/x-mng", "mng"},
 	}
 
 	defaultEvents = Events{
@@ -122,13 +122,13 @@ func NewDefaultRestyConfig(prefix, logPath, lualibPath string) *Config {
 	errorLogPath := filepath.Join(logPath, "error.log")
 	config.ErrorLog = errorLogPath + " warn"
 	config.PId = filepath.Join(logPath, "nginx.pid")
-	config.Extras = []Pair{
+	config.Extras = Options{
 		{"env", "RESTY_VERSION"},
 		{"env", "RESTY_PREFIX"},
 	}
 	config.HTTP = NewDefaultHTTPConfig()
 	config.HTTP.AccessLog = filepath.Join(logPath, "access.log")
-	config.HTTP.ExtConfig = []Pair{
+	config.HTTP.ExtConfig = Options{
 		{"keepalive_timeout", "60"},
 		{"lua_socket_connect_timeout", "3s"},
 		{"lua_socket_send_timeout", "3s"},
@@ -137,9 +137,9 @@ func NewDefaultRestyConfig(prefix, logPath, lualibPath string) *Config {
 
 	if len(lualibPath) > 0 {
 		config.HTTP.ExtConfig = append(config.HTTP.ExtConfig,
-			Pair{"lua_package_path", fmt.Sprintf("'%s/?.lua;%s/?/init.lua;;'", lualibPath, lualibPath)})
+			[]string{"lua_package_path", fmt.Sprintf("'%s/?.lua;%s/?/init.lua;;'", lualibPath, lualibPath)})
 		config.HTTP.ExtConfig = append(config.HTTP.ExtConfig,
-			Pair{"lua_package_cpath", fmt.Sprintf("'%s/?.so;;'", lualibPath)})
+			[]string{"lua_package_cpath", fmt.Sprintf("'%s/?.so;;'", lualibPath)})
 	}
 	return config
 }
