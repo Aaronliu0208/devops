@@ -111,7 +111,7 @@ type TestServer struct {
 type MarshalTest struct {
 }
 
-func (t *MarshalTest) Marshal() ([]Directive, error) {
+func (t *MarshalTest) MarshalD() ([]Directive, error) {
 	return []Directive{
 		NewKVOption("marshaler", "testpass"),
 	}, nil

@@ -2,9 +2,9 @@ package nginx
 
 // Events nginx events directive
 type Events struct {
-	WorkerConnections int    `kv:"worker_connections"`
-	Use               string `kv:"use"`          //epoll
-	MultiAccept       bool   `kv:"multi_accept"` //default on
+	WorkerConnections int    `kv:"worker_connections" json:"worker_connections"`
+	Use               string `kv:"use" json:"use,omitempty"`                   //epoll
+	MultiAccept       bool   `kv:"multi_accept" json:"multi_accept,omitempty"` //default on
 }
 
 //HTTP nginx http config section
@@ -21,7 +21,7 @@ type HTTP struct {
 //Config represent nginx config
 // follows https://www.nginx.com/resources/wiki/start/topics/examples/full/ to build nginx base config
 type Config struct {
-	User            string `kv:"user,omitempty"`
+	User            string `kv:"user,omitempty" json:"user,omitempty"`
 	WorkerProcesses string `kv:"worker_processes"`
 	PId             string `kv:"pid"`
 	ErrorLog        string `kv:"error_log,omitempty"`
