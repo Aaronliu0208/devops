@@ -204,7 +204,7 @@ func TestCheckout(t *testing.T) {
 	ioutil.WriteFile(filepath.Join(localRepo, "test.log"), []byte(rnd), 0644)
 	status, err := wt.Status()
 	checkIfError(t, err)
-	for n, _ := range status {
+	for n := range status {
 		wt.Add(n)
 	}
 	commit, err := wt.Commit("commit with:"+rnd, &git.CommitOptions{
