@@ -1,10 +1,14 @@
 package snapshot
 
-//SnapshotManager with create or restore snapshot
-type SnapshotManager interface {
-	Create() (*Snapshot, error)
-	List() (Snapshots, error)
-	DeleteByID(id string) error
-	GetByID(id string) (*Snapshot, error)
-	Restore(sp *Snapshot) error
+type Snapshot interface {
+	Take() (*Snapinfo, error)
+	Restore(*Snapinfo) error
+	List() (Snapinfos, error)
+}
+
+// GitServerOperator operator that manage remote repo for create and add pubkey
+type GitServerOperator interface {
+	CreateRepo(name string) error
+	AddPublicKey(pubKey []byte) error
+	IsPubKeyExists(pubKey []byte) bool
 }

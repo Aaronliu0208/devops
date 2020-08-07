@@ -1,13 +1,16 @@
 package snapshot
 
-import "time"
+import (
+	"time"
+)
 
-type Snapshot struct {
+type Snapinfo struct {
 	ID          string
 	CreatedAt   time.Time
 	Description string
+	Author      string
 	// snapshot的元信息，包括git地址，commitid, author等
 	Meta map[string]string
 }
 
-type Snapshots []*Snapshot
+type Snapinfos []*Snapinfo

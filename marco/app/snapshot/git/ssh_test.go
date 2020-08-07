@@ -81,6 +81,17 @@ func checkIfError(t *testing.T, err error) {
 	}
 }
 
+func TestSSHLoadKeyFileWithoutPassword(t *testing.T) {
+	_, filename, _, _ := runtime.Caller(0)
+	wd := filepath.Dir(filename)
+	s := fmt.Sprintf("%s/test/id_rsa_test", wd)
+	sshKey, err := ioutil.ReadFile(s)
+	checkIfError(t, err)
+
+	_, err = ssh2.NewPublicKeys("git", []byte(sshKey), "")
+	checkIfError(t, err)
+}
+
 func TestSSHKeyload(t *testing.T) {
 	defer destroy()
 	localRepo := getRepoDir()
