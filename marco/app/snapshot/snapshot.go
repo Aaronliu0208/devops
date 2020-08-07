@@ -14,3 +14,9 @@ type Snapinfo struct {
 }
 
 type Snapinfos []*Snapinfo
+
+type Snapshot interface {
+	Take(info *Snapinfo) error
+	Restore(id string) error
+	List() (Snapinfos, error)
+}
