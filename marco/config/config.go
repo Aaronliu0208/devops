@@ -36,6 +36,10 @@ func (c Config) GetPrefix() string {
 	return filepath.Join(c.Workspace, "app")
 }
 
+func (c Config) GetSnapshotDir() string {
+	return filepath.Join(c.Workspace, "snaps")
+}
+
 //GetNginxBinPath get nginx bin path
 func (c Config) GetNginxBinPath() string {
 	return filepath.Join(c.Workspace, "app/nginx/sbin/nginx")

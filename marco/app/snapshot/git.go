@@ -1,13 +1,14 @@
 package snapshot
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
+	"sync"
 
 	conf "casicloud.com/ylops/marco/config"
 	"casicloud.com/ylops/marco/pkg/gogs"
 	"casicloud.com/ylops/marco/pkg/models"
-	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/transport"
 	ssh2 "github.com/go-git/go-git/v5/plumbing/transport/ssh"
 )
@@ -26,6 +27,13 @@ type SnapShotOption struct {
 
 func (o *SnapShotOption) getAuth() (transport.AuthMethod, error) {
 	return ssh2.NewPublicKeys(o.Username, []byte(o.PEMBytes), o.Password)
+}
+
+func (o *SnapShotOption) createClient() *gogs.Client {
+	return gogs.NewClient(
+		o.APIURL,
+		o.AccessToken,
+	)
 }
 
 type WorkTree struct {
@@ -52,15 +60,59 @@ type GitSnapshot struct {
 	opt     *SnapShotOption
 	wt      *WorkTree
 	client  *gogs.Client
+	mt      sync.Mutex
+}
+
+func NewGitSnapShot(cluster *models.Cluster,
+	config *conf.Config,
+	opt *SnapShotOption) *GitSnapshot {
+	client := opt.createClient()
+
+	snapDir := config.GetSnapshotDir()
+	localReop := filepath.Join(snapDir, "local")
+	targetDir := config.GetPrefix()
+	restorDir := filepath.Join(snapDir, "restore")
+	wt := &WorkTree{
+		LocalRepo:  localReop,
+		TargetDir:  targetDir,
+		RestoreDir: restorDir,
+	}
+	g := &GitSnapshot{
+		client:  client,
+		Cluster: cluster,
+		Config:  config,
+		wt:      wt,
+		opt:     opt,
+	}
+
+	return g
 }
 
 func (g *GitSnapshot) Take(info *Snapinfo) error {
 	// 检查远程Remote是否存在,不能存在就调用API创建一个信息
-	var err error
-	if err == git.ErrRemoteNotFound {
+	remoteURL, err := g.GetRemoteURL()
+	if err == gogs.ErrNotFound {
 		// 调用GitServerOperator创建一个新的
+		_, err := g.client.CreateRepo(gogs.CreateRepoOption{
+			Name:        g.Cluster.ID,
+			Description: fmt.Sprintf("macro cluster: %s", g.Cluster.ID),
+			Private:     true,
+		})
+
+		if err != nil {
+			return err
+		}
 	}
 	// 初始化Git
-
+	fmt.Println(remoteURL)
 	return nil
+}
+
+func (g *GitSnapshot) GetRemoteURL() (string, error) {
+	// check exists
+	repo, err := g.client.GetRepo(g.opt.Username, g.Cluster.ID)
+	if err != nil {
+		return "", err
+	}
+	return repo.SSHURL, nil
 }
