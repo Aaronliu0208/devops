@@ -3,6 +3,7 @@ package dao
 import (
 	"testing"
 
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -15,4 +16,6 @@ func TestCertCreateDao(t *testing.T) {
 	}
 	dao := NewCertificateDao(db)
 	assert.NotNil(t, dao)
+
+	MigerateDB(db)
 }

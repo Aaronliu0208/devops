@@ -29,3 +29,12 @@ func (c *CertificateDao) Create(ctx context.Context, obj *entity.Certificate) er
 	}
 	return nil
 }
+
+// cert初始化
+func init() {
+	RegistryMigrater(&entity.Certificate{}, updateDB)
+}
+
+func updateDB(*gorm.DB) error {
+	return nil
+}
