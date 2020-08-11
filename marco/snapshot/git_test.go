@@ -27,7 +27,7 @@ func getGitSnapshot() *GitSnapshot {
 	_, filename, _, _ := runtime.Caller(0)
 	wd := filepath.Dir(filename)
 	config := &conf.Config{
-		Workspace: filepath.Join(wd, "../../bin"),
+		Workspace: filepath.Join(wd, "../bin"),
 	}
 
 	s := fmt.Sprintf("%s/git/test/id_rsa", wd)

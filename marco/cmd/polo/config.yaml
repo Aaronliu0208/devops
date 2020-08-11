@@ -6,6 +6,6 @@ http:
   port: 8080
   enable_ssl: false
 log:
-  level: debug
+  debug: true
   output: file
   file: /home/shanyou/src/ops/ylops/marco/bin/logs/marco.log
