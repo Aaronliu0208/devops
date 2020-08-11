@@ -14,11 +14,8 @@ import (
 	"regexp"
 	"strings"
 
-	"casicloud.com/ylops/marco/pkg/logger"
 	"casicloud.com/ylops/marco/pkg/utils"
 )
-
-var log = logger.Get("RestyInstaller", nil)
 
 //RestyInstaller install resty on disk
 type RestyInstaller struct {

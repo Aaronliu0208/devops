@@ -6,13 +6,11 @@ import (
 
 	"casicloud.com/ylops/marco/config"
 	"casicloud.com/ylops/marco/pkg/erron"
-	"casicloud.com/ylops/marco/pkg/logger"
+	"casicloud.com/ylops/marco/pkg/log"
 	"casicloud.com/ylops/marco/pkg/models"
 	"casicloud.com/ylops/marco/pkg/utils"
 	"casicloud.com/ylops/marco/resources"
 )
-
-var log = logger.Get("pakcage manager", nil)
 
 //PackageManager 管理nginx 包括安装，以及启停管理
 type PackageManager struct {

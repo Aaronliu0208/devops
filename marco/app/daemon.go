@@ -11,8 +11,7 @@ import (
 	"time"
 
 	"casicloud.com/ylops/marco/config"
-	"casicloud.com/ylops/marco/pkg/logger"
-	"github.com/sirupsen/logrus"
+	"casicloud.com/ylops/marco/pkg/log"
 )
 
 //启动http server管理本地nginx
@@ -22,39 +21,25 @@ import (
 // InitLogger 初始化日志模块
 func InitLogger() (func(), error) {
 	c := config.C.Log
-	level, err := logrus.ParseLevel(c.Level)
-	if err != nil {
-		return nil, err
+	if c.DEBUG {
+		log.SetLevel(int(log.DEBUG))
 	}
-	logger.SetLevel(int(level))
-	logger.SetFormatter(c.Format)
 
-	// 设定日志输出
-	var file *os.File
 	if c.Output != "" {
 		switch c.Output {
 		case "stdout":
-			logger.SetOutput(os.Stdout)
+			log.SetOutput(os.Stdout)
 		case "stderr":
-			logger.SetOutput(os.Stderr)
+			log.SetOutput(os.Stderr)
 		case "file":
 			if name := c.File; name != "" {
 				_ = os.MkdirAll(filepath.Dir(name), 0777)
-
-				f, err := os.OpenFile(name, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0666)
-				if err != nil {
-					return nil, err
-				}
-				logger.SetOutput(f)
-				file = f
+				log.SetOutputFile(name)
 			}
 		}
 	}
 
 	return func() {
-		if file != nil {
-			file.Close()
-		}
 	}, nil
 }
 

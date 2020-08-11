@@ -95,8 +95,7 @@ type HTTP struct {
 // Log config for log
 type Log struct {
 	//same as logrus level
-	Level  string `mapstructure:"level,omitempty"`
-	Format string `mapstructure:"format,omitempty"`
+	DEBUG bool `mapstructure:"level,omitempty"`
 	// output type like stdout/stderr/file
 	Output string `mapstructure:"output,omitempty"`
 	// File name for app log
