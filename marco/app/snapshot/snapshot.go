@@ -9,6 +9,7 @@ type Snapinfo struct {
 	CreatedAt   time.Time
 	Description string
 	Author      string
+	Email       string
 	// snapshot的元信息，包括git地址，commitid, author等
 	Meta map[string]string
 }

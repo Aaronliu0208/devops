@@ -9,8 +9,18 @@ import (
 	conf "casicloud.com/ylops/marco/config"
 	"casicloud.com/ylops/marco/pkg/gogs"
 	"casicloud.com/ylops/marco/pkg/models"
+	"casicloud.com/ylops/marco/pkg/utils"
+	"github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/config"
+	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/go-git/go-git/v5/plumbing/transport"
+	"github.com/go-git/go-git/v5/plumbing/transport/http"
 	ssh2 "github.com/go-git/go-git/v5/plumbing/transport/ssh"
+	"golang.org/x/crypto/ssh"
+)
+
+var (
+	descFormat = "id:%s,desc:%s"
 )
 
 //SnapShotOption 初始化Git需要的相关配置
@@ -19,14 +29,26 @@ type SnapShotOption struct {
 	Username string
 	// key pem for sshkey
 	PEMBytes []byte
+	PEMPass  string
 	// password for key
 	Password    string
 	APIURL      string
 	AccessToken string
 }
 
-func (o *SnapShotOption) getAuth() (transport.AuthMethod, error) {
-	return ssh2.NewPublicKeys(o.Username, []byte(o.PEMBytes), o.Password)
+func (o *SnapShotOption) getSSHAuth() (transport.AuthMethod, error) {
+	auth, err := ssh2.NewPublicKeys(o.Username, []byte(o.PEMBytes), o.PEMPass)
+	auth.HostKeyCallbackHelper = ssh2.HostKeyCallbackHelper{
+		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+	}
+	return auth, err
+}
+
+func (o *SnapShotOption) getHTTPAuth() (transport.AuthMethod, error) {
+	return &http.BasicAuth{
+		Username: o.Username,
+		Password: o.Password,
+	}, nil
 }
 
 func (o *SnapShotOption) createClient() *gogs.Client {
@@ -104,7 +126,76 @@ func (g *GitSnapshot) Take(info *Snapinfo) error {
 		}
 	}
 	// 初始化Git
-	fmt.Println(remoteURL)
+	auth, err := g.opt.getHTTPAuth()
+	if err != nil {
+		return err
+	}
+	//清空localrepo
+	os.RemoveAll(g.wt.LocalRepo)
+
+	var repo *git.Repository
+	repo, err = git.PlainClone(g.wt.LocalRepo, false, &git.CloneOptions{
+		Auth:       auth,
+		NoCheckout: true,
+		Progress:   os.Stdout,
+		URL:        remoteURL,
+	})
+
+	if err == transport.ErrEmptyRemoteRepository {
+		repo, err = git.PlainInit(g.wt.LocalRepo, false)
+		if err != nil {
+			return err
+		}
+		_, err = repo.CreateRemote(&config.RemoteConfig{
+			Name: "origin",
+			URLs: []string{remoteURL},
+		})
+		if err != nil {
+			return err
+		}
+	}
+	if err != nil {
+		return err
+	}
+	//复制
+	err = utils.Copy(g.wt.TargetDir, g.wt.LocalRepo)
+	if err != nil {
+		return err
+	}
+
+	w, err := repo.Worktree()
+	if err != nil {
+		return err
+	}
+	status, err := w.Status()
+	for n := range status {
+		w.Add(n)
+	}
+	status, err = w.Status()
+	for n := range status {
+		fmt.Printf("%v\n", n)
+	}
+	desc := fmt.Sprintf(descFormat, info.ID, info.Description)
+	commit, err := w.Commit(desc, &git.CommitOptions{
+		Author: &object.Signature{
+			Name:  info.Author,
+			Email: info.Email,
+			When:  info.CreatedAt,
+		},
+	})
+	if err != nil {
+		return err
+	}
+	_, err = repo.CommitObject(commit)
+	if err != nil {
+		return err
+	}
+	err = repo.Push(&git.PushOptions{
+		Auth: auth,
+	})
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -114,5 +205,5 @@ func (g *GitSnapshot) GetRemoteURL() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return repo.SSHURL, nil
+	return repo.CloneURL, nil
 }
