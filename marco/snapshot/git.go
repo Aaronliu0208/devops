@@ -8,6 +8,7 @@ import (
 
 	conf "casicloud.com/ylops/marco/config"
 	"casicloud.com/ylops/marco/pkg/gogs"
+	"casicloud.com/ylops/marco/pkg/log"
 	"casicloud.com/ylops/marco/pkg/models"
 	"casicloud.com/ylops/marco/pkg/utils"
 	"github.com/go-git/go-git/v5"
@@ -72,6 +73,14 @@ func (wt *WorkTree) HasRepo() bool {
 	}
 
 	return true
+}
+
+func (wt *WorkTree) CleanGitDir() error {
+	gitDir := filepath.Join(wt.LocalRepo, ".git")
+	if _, err := os.Stat(gitDir); os.IsNotExist(err) {
+		return err
+	}
+	return os.RemoveAll(gitDir)
 }
 
 //GitSnapshot 通过git来管理快照并同步到远程仓库且以目录为单位进行快照的创建与恢复
@@ -169,12 +178,10 @@ func (g *GitSnapshot) Take(info *Snapinfo) error {
 	}
 	status, err := w.Status()
 	for n := range status {
+		log.Debugf("repo add %v\n", n)
 		w.Add(n)
 	}
-	status, err = w.Status()
-	for n := range status {
-		fmt.Printf("%v\n", n)
-	}
+
 	desc := fmt.Sprintf(descFormat, info.ID, info.Description)
 	commit, err := w.Commit(desc, &git.CommitOptions{
 		Author: &object.Signature{
@@ -206,4 +213,15 @@ func (g *GitSnapshot) GetRemoteURL() (string, error) {
 		return "", err
 	}
 	return repo.CloneURL, nil
+}
+
+func (g *GitSnapshot) Restore(id string) error {
+
+}
+
+func (g *GitSnapshot) List() (Snapinfos, error) {
+	remoteURL, err := g.GetRemoteURL()
+	if err != nil {
+		return err
+	}
 }
