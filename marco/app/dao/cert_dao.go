@@ -23,10 +23,11 @@ func (c *CertificateDao) GetCertDB(ctx context.Context) *gorm.DB {
 }
 
 // Create 插入一条数据记录
-func (c *CertificateDao) Create(ctx context.Context, obj *entity.Certificate) error {
+func (c *CertificateDao) Create(obj *entity.Certificate) error {
 	if result := c.db.Create(obj); result.Error != nil {
 		return errors.WithMessage(result.Error, "插入数据失败")
 	}
+
 	return nil
 }
 

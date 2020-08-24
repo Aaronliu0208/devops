@@ -221,7 +221,10 @@ func (g *GitSnapshot) Restore(id string) error {
 
 func (g *GitSnapshot) List() (Snapinfos, error) {
 	remoteURL, err := g.GetRemoteURL()
+	fmt.Println(remoteURL)
 	if err != nil {
-		return err
+		return nil, err
 	}
+
+	return nil, nil
 }
