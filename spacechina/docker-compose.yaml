@@ -1,0 +1,36 @@
+version: "3"
+services:
+  frontend:
+      image: registry.cn-beijing.aliyuncs.com/ylpub/resty-buster:latest
+      ports:
+        - "8080:80"
+      volumes:
+        - "./frontend/conf.d:/openresty/nginx/conf/conf.d"
+        - "./frontend/html:/openresty/nginx/html"
+        - "./frontend/lib:/openresty/nginx/lib"
+        - "./frontend/logs:/openresty/nginx/logs"
+      command: "./sbin/nginx"
+  backend_default:
+      image: registry.cn-beijing.aliyuncs.com/ylpub/resty-buster:latest
+      ports:
+        - "8888:80"
+      volumes:
+        - "./backend_default/conf.d:/openresty/nginx/conf/conf.d"
+        - "./backend_default/logs:/openresty/nginx/logs"
+      command: "./sbin/nginx"
+  backend1:
+      image: registry.cn-beijing.aliyuncs.com/ylpub/resty-buster:latest
+      ports:
+        - "8081:80"
+      volumes:
+        - "./backend1/conf.d:/openresty/nginx/conf/conf.d"
+        - "./backend1/logs:/openresty/nginx/logs"
+      command: "./sbin/nginx"
+  backend2:
+      image: registry.cn-beijing.aliyuncs.com/ylpub/resty-buster:latest
+      ports:
+        - "8082:80"
+      volumes:
+        - "./backend2/conf.d:/openresty/nginx/conf/conf.d"
+        - "./backend2/logs:/openresty/nginx/logs"
+      command: "./sbin/nginx"
