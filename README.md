@@ -1,6 +1,6 @@
-运维管理平台
+devops management platform
 ===
 
-主要服务管理，包括主机等CMDB配置管理，知识共享，负载均衡网关配置等运维工作。
+Mainly use for service management, which include CMDB configurement, knowledge sharing, loadbalancing netgate.
 
-配置管理计划使用`蓝鲸bk-cmdb`,平台界面用`antd`, 初期先把平台经常使用的页面等信息放在平台中，之后逐步把一些管理监控内容放平台中。
+configure use `tencent/bk-cmdb`, platform use `antd`, in early days we put frequently used page infor on the platform, at second phase, we will put some monitor infor on the platform.
